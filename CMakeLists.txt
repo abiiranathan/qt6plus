@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 
-project(splitter LANGUAGES CXX)
+project(qt6plus LANGUAGES CXX)
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -9,21 +9,27 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(BUILD_EXAMPLES ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets )
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets PrintSupport)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets PrintSupport)
 
-add_library(splitter SHARED
-  splitter_global.h
-  splitter.h
+add_library(qt6plus SHARED
+  Splitter.h
+  Splitter.cpp
+
   GraphicsScene.h
+  GraphicsScene.cpp
+
+  Delegates.h
+  TableWidget.h
+  TableWidget.cpp
 )
 
-target_link_libraries(splitter PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Core)
-target_compile_definitions(splitter PRIVATE SPLITTER_LIBRARY)
+target_link_libraries(qt6plus PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::PrintSupport)
+target_compile_definitions(qt6plus PRIVATE SPLITTER_LIBRARY)
 
 
 if(BUILD_EXAMPLES)
     add_executable(main main.cpp)
-    target_link_libraries(main PRIVATE splitter)
-    target_link_libraries(main PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Core)
+    target_link_libraries(main PRIVATE qt6plus)
+    target_link_libraries(main PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::PrintSupport)
 endif()

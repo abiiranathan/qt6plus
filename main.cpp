@@ -5,86 +5,103 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
+#include "Delegates.h"
 #include "GraphicsScene.h"
-#include "splitter.h"
+#include "Splitter.h"
+#include "TableWidget.h"
 
-int main(int argc, char *argv[]) {
-  QApplication app(argc, argv);
+int main(int argc, char* argv[]) {
+    QApplication app(argc, argv);
 
-  // Create a main window
-  QWidget mainWindow;
-  QVBoxLayout layout(&mainWindow);
+    // Create a main window
+    QWidget mainWindow;
+    QVBoxLayout layout(&mainWindow);
 
-  // Create widgets
-  QLabel *label1 = new QLabel("Widget 1");
-  QLabel *label2 = new QLabel("Widget 2");
-  QPushButton *button = new QPushButton("Widget 3");
+    // Create the custom splitter
+    Splitter splitter;
+    splitter.setOrientation(Qt::Vertical);
 
-  // Create the custom splitter
-  Splitter splitter;
-  splitter.setOrientation(Qt::Vertical);
+    // Create a table widget
+    TableWidget* table = new TableWidget(nullptr, QList<int>(), QList<int>{0, 1});
+    table->title = "RISTAL UNIVERSITY";
+    table->logo = QUrl::fromLocalFile("/home/nabiizy/Downloads/logo-white.png");
 
-  // Add widgets to the splitter
-  splitter.addWidget(label1, 1);
-  splitter.addWidget(button, 2);
-  splitter.addWidget(label2, 3);
+    table->setHorizontalHeaders(QStringList{"ID", "Name", "DOB", "Sex", "CreatedAt", "Time"},
+                                QStringList{"id", "name", "dob", "sex", "created_at", "time"});
 
-  // Set the stretch factors for the splitter widgets
-  //  splitter.setWidgetSizes(200, 600, 200);
+    table->setItemDelegateForColumn(2, new DateDelegate());
+    table->setItemDelegateForColumn(3, new ComboBoxDelegate(nullptr, QStringList{"Male", "Female"}));
+    table->setItemDelegateForColumn(4, new DateTimeDelegate());
+    table->setItemDelegateForColumn(5, new TimeDelegate());
 
-  // Add the splitter to the layout
-  layout.addWidget(&splitter);
+    table->setDoubleClickHandler([](int row, int col, auto data) {
+        qDebug() << data << "\n";
+    });
 
-  // Set the layout for the main window
-  mainWindow.setLayout(&layout);
-  mainWindow.setWindowTitle("Splitter Example");
+    // Get the vertical header
+    QHeaderView* verticalHeader = table->verticalHeader();
 
-  // Test Graphics scene
-  QGraphicsView view;
-  GraphicsScene scene;
-  scene.setSceneRect(0, 0, 400, 400);
+    // Hide the row numbers
+    verticalHeader->setVisible(false);
 
-  QPen pen(Qt::red, 2, Qt::SolidLine, Qt::FlatCap, Qt::BevelJoin);
-  scene.setPen(pen);
+    table->setData(
+        QVector<QStringList>{{"1", "Abiira Nathan", "1989-05-18", "Male", "2023-06-07T06:30:13.075Z", "16:30:34"},
+                             {"2", "Kwikiriza Dan", "2005-06-12", "Female", "null", "00:30:00"}});
 
-  view.setScene(&scene);
-  // Enable anti-aliasing for the QGraphicsView
-  view.setRenderHint(QPainter::Antialiasing);
+    // Add widgets to the splitter
+    splitter.addWidget(table, 1);
 
-  view.setWindowTitle("GraphicsScene Test");
+    // Set the stretch factors for the splitter widgets
+    //  splitter.setWidgetSizes(200, 600, 200);
 
-  // Set up the initial pen color and brush color
-  scene.setBrushColor(Qt::transparent);
-  scene.setBackgroundBrush(Qt::white);
+    // Add the splitter to the layout
+    layout.addWidget(&splitter);
 
-  scene.createCircle(QPointF(10, 10), 100, pen, Qt::blue);
+    // Set the layout for the main window
+    mainWindow.setLayout(&layout);
+    mainWindow.setWindowTitle("Splitter Example");
 
-  scene.addLine(QLineF({5, 5}, {200, 100}));
+    // Test Graphics scene
+    QGraphicsView view;
+    GraphicsScene scene;
+    scene.setSceneRect(0, 0, 400, 400);
 
-  scene.drawBezierCurve(QPointF(100, 100), QPointF(300, 100), QPointF(150, 50),
-                        QPointF(250, 150));
+    QPen pen(Qt::red, 2, Qt::SolidLine, Qt::FlatCap, Qt::BevelJoin);
+    scene.setPen(pen);
 
-  scene.drawQuadraticCurve(QPointF(100, 100), QPointF(300, 100),
-                           QPointF(200, 0));
+    view.setScene(&scene);
+    // Enable anti-aliasing for the QGraphicsView
+    view.setRenderHint(QPainter::Antialiasing);
 
-  scene.createRectangle(QPointF(100, 200), 200, 60, QPen(Qt::cyan),
-                        QBrush(Qt::DiagCrossPattern));
+    view.setWindowTitle("GraphicsScene Test");
 
-  scene.addText(QPoint(10, 200), "HELLO ABIIRA NATHAN",
-                QFont("Arial", 18, 600));
+    // Set up the initial pen color and brush color
+    scene.setBrushColor(Qt::transparent);
+    scene.setBackgroundBrush(Qt::white);
 
-  scene.drawTriangle(QPointF(20, 50), QPointF(200, 75), QPointF(300, 300),
-                     QPen(Qt::cyan), QBrush(Qt::blue));
+    scene.createCircle(QPointF(10, 10), 100, pen, Qt::blue);
 
-  //  scene.setBrushStyle(Qt::DiagCrossPattern);  // Set brush style
-  //  scene.saveToFile("image.png");  // Save the scene as an image file
+    scene.addLine(QLineF({5, 5}, {200, 100}));
 
-  // Show the view
-  //  view.show();
+    scene.drawBezierCurve(QPointF(100, 100), QPointF(300, 100), QPointF(150, 50),
+                          QPointF(250, 150));
 
-  splitter.addWidget(&view);
-  splitter.setWidgetStretchFactors(1, 2, 3);
-  mainWindow.show();
+    scene.drawQuadraticCurve(QPointF(100, 100), QPointF(300, 100),
+                             QPointF(200, 0));
 
-  return app.exec();
+    scene.createRectangle(QPointF(100, 200), 200, 60, QPen(Qt::cyan),
+                          QBrush(Qt::DiagCrossPattern));
+
+    scene.addText(QPoint(10, 200), "HELLO ABIIRA NATHAN",
+                  QFont("Arial", 18, 600));
+
+    scene.drawTriangle(QPointF(20, 50), QPointF(200, 75), QPointF(300, 300),
+                       QPen(Qt::cyan), QBrush(Qt::blue));
+
+    splitter.addWidget(&view);
+    splitter.setWidgetStretchFactors(1, 1);
+
+    mainWindow.show();
+
+    return app.exec();
 }
