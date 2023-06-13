@@ -1,7 +1,9 @@
 
+#include <QApplication>
 #include "DatabaseUtils.h"
+#include "httpclient.h"
 
-int main() {
+int main(int argc, char** argv) {
     // Set up the database connection
     if (!connectToSQLiteDatabase(":memory:")) {
         return 1;
@@ -46,5 +48,29 @@ int main() {
     }
 
     QSqlDatabase::database().close();
-    return 0;
+
+    QApplication app(argc, argv);
+    HttpClient client;
+
+    // Syncronous API
+    //    HttpResponse res = client.get_sync("https://example.com");
+
+    //    if (res.OK) {
+    //        qDebug() << res.data << "\n";
+    //    } else {
+    //        qDebug() << res.errorString << "\n";
+    //    }
+
+    client.get("https://google.com");
+    QObject::connect(&client, &HttpClient::finished, [](const HttpResponse& res) {
+        if (res.OK) {
+            qDebug() << res.data << "\n";
+        } else {
+            qDebug() << res.errorString << "\n";
+        }
+
+        qDebug() << res.statusCode;
+    });
+
+    return app.exec();
 }

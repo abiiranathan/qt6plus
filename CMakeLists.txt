@@ -9,8 +9,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(BUILD_EXAMPLES ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets PrintSupport Sql)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets PrintSupport Sql)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets PrintSupport Sql Network Gui)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets PrintSupport Sql Network Gui)
 
 add_library(qt6plus SHARED
   Splitter.h
@@ -25,26 +25,27 @@ add_library(qt6plus SHARED
 
   DatabaseUtils.h
   DatabaseUtils.cpp
+
+  httpclient.h
+  httpclient.cpp
 )
 
-target_link_libraries(qt6plus PRIVATE
+target_link_libraries(qt6plus PUBLIC
     Qt${QT_VERSION_MAJOR}::Widgets
     Qt${QT_VERSION_MAJOR}::Core
     Qt${QT_VERSION_MAJOR}::PrintSupport
-    Qt${QT_VERSION_MAJOR}::Sql)
+    Qt${QT_VERSION_MAJOR}::Sql
+    Qt${QT_VERSION_MAJOR}::Network
+    Qt${QT_VERSION_MAJOR}::Gui
+)
+
 target_compile_definitions(qt6plus PRIVATE SPLITTER_LIBRARY)
 
 
 if(BUILD_EXAMPLES)
     add_executable(main main.cpp)
     target_link_libraries(main PRIVATE qt6plus)
-    target_link_libraries(main PRIVATE
-        Qt${QT_VERSION_MAJOR}::Widgets
-        Qt${QT_VERSION_MAJOR}::Core
-        Qt${QT_VERSION_MAJOR}::PrintSupport
-        Qt${QT_VERSION_MAJOR}::Sql)
 
     add_executable(db db.cpp)
     target_link_libraries(db PRIVATE qt6plus)
-    target_link_libraries(db PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Sql)
 endif()
