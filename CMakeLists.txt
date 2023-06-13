@@ -9,8 +9,27 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(BUILD_EXAMPLES ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets PrintSupport Sql Network Gui)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets PrintSupport Sql Network Gui)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS
+        Core
+        Widgets
+        PrintSupport
+        Sql
+        Network
+        Gui
+        Multimedia
+        Bluetooth
+ )
+
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS
+    Core
+    Widgets
+    PrintSupport
+    Sql
+    Network
+    Gui
+    Multimedia
+    Bluetooth
+)
 
 add_library(qt6plus SHARED
   Splitter.h
@@ -28,6 +47,12 @@ add_library(qt6plus SHARED
 
   httpclient.h
   httpclient.cpp
+
+  EnhancedTreeView.h
+  EnhancedTreeView.cpp
+
+  BluetoothDevice.h
+  BluetoothDevice.cpp
 )
 
 target_link_libraries(qt6plus PUBLIC
@@ -37,6 +62,8 @@ target_link_libraries(qt6plus PUBLIC
     Qt${QT_VERSION_MAJOR}::Sql
     Qt${QT_VERSION_MAJOR}::Network
     Qt${QT_VERSION_MAJOR}::Gui
+    Qt${QT_VERSION_MAJOR}::Multimedia
+    Qt${QT_VERSION_MAJOR}::Bluetooth
 )
 
 target_compile_definitions(qt6plus PRIVATE SPLITTER_LIBRARY)
@@ -48,4 +75,11 @@ if(BUILD_EXAMPLES)
 
     add_executable(db db.cpp)
     target_link_libraries(db PRIVATE qt6plus)
+
+    add_executable(treeview treeview.cpp)
+    target_link_libraries(treeview PRIVATE qt6plus)
+
+    add_executable(mediaPlayer mediaPlayer.cpp)
+    target_link_libraries(mediaPlayer PRIVATE qt6plus)
+
 endif()
