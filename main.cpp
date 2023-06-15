@@ -1,34 +1,16 @@
+#include <bcrypt.h>
 #include <QApplication>
 #include <QLabel>
 #include <QMainWindow>
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QWidget>
-#include "BluetoothDevice.h"
+#include <iostream>
+#include <string>
 #include "Delegates.h"
 #include "GraphicsScene.h"
 #include "Splitter.h"
 #include "TableWidget.h"
-
-void BTConnect() {
-    BluetoothDevice bluetoothDevice;
-    bluetoothDevice.discoverDevices();
-
-    QObject::connect(&bluetoothDevice, &BluetoothDevice::deviceDiscovered,
-                     [](const QBluetoothDeviceInfo& deviceInfo) {
-                         // Handle discovered device
-                     });
-
-    QObject::connect(&bluetoothDevice, &BluetoothDevice::connected, [&]() {
-        // Connected to the device
-        bluetoothDevice.writeData("Hello, Bluetooth!");
-    });
-
-    QObject::connect(&bluetoothDevice, &BluetoothDevice::dataReceived,
-                     [](const QByteArray& data) {
-                         // Handle received data
-                     });
-}
 
 int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
@@ -121,9 +103,12 @@ int main(int argc, char* argv[]) {
     splitter.addWidget(&view);
     splitter.setWidgetStretchFactors(1, 1);
 
-    BTConnect();
+    // Test Bcrypt functions
+    std::string password = "strong_password";
+    std::string hashedPassword = bcrypt::generateHash(password);
 
+    std::cout << "Password Valid: " << bcrypt::validatePassword(password, hashedPassword) << std::endl;
+    std::cout << "Password Valid: " << bcrypt::validatePassword("Other password", hashedPassword) << std::endl;
     mainWindow.show();
-
     return app.exec();
 }

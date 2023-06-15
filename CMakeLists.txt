@@ -9,6 +9,9 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(BUILD_EXAMPLES ON)
 
+# Add bcrypt library
+add_subdirectory(Bcrypt)
+
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS
         Core
         Widgets
@@ -42,6 +45,8 @@ add_library(qt6plus SHARED
   TableWidget.h
   TableWidget.cpp
 
+  error.h
+  error.cpp
   DatabaseUtils.h
   DatabaseUtils.cpp
 
@@ -71,7 +76,7 @@ target_compile_definitions(qt6plus PRIVATE SPLITTER_LIBRARY)
 
 if(BUILD_EXAMPLES)
     add_executable(main main.cpp)
-    target_link_libraries(main PRIVATE qt6plus)
+    target_link_libraries(main PRIVATE qt6plus bcrypt)
 
     add_executable(db db.cpp)
     target_link_libraries(db PRIVATE qt6plus)
