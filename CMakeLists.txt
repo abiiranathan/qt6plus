@@ -12,6 +12,7 @@ set(BUILD_EXAMPLES ON)
 # Add bcrypt library
 add_subdirectory(Bcrypt)
 
+
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS
         Core
         Widgets
@@ -45,8 +46,8 @@ add_library(qt6plus SHARED
   TableWidget.h
   TableWidget.cpp
 
-  error.h
-  error.cpp
+  errormanager.h
+  errormanager.cpp
   DatabaseUtils.h
   DatabaseUtils.cpp
 

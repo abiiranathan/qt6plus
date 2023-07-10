@@ -1,18 +1,20 @@
-#include "error.h"
+#include "errormanager.h"
 
 QString ErrorManager::error;
 QMutex ErrorManager::mutex;
 
 void ErrorManager::setError(const QString& errorMessage) {
-  QMutexLocker locker(&mutex);
-  error = errorMessage;
+    QMutexLocker locker(&mutex);
+    error = errorMessage;
 }
 
 const QString ErrorManager::lastError() {
-  QMutexLocker locker(&mutex);
-  QString errorMessage = error;
-  error.clear();
-  return errorMessage;
+    QMutexLocker locker(&mutex);
+    QString errorMessage = error;
+    error.clear();
+    return errorMessage;
 }
 
-bool ErrorManager::hasError() { return !error.isEmpty(); }
+bool ErrorManager::hasError() {
+    return !error.isEmpty();
+}
