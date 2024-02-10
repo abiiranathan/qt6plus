@@ -38,6 +38,11 @@ class CustomTableModel : public QStandardItemModel {
 
     Qt::ItemFlags flags(const QModelIndex& index) const override;
 
+    QList<int> getEditableColumns() const;
+    QList<int> getDisabledColumns() const;
+
+    bool setData(const QModelIndex& index, const QVariant& value, int role) override;
+
    private:
     QList<int> editableColumns;
     QList<int> disabledColumns;
@@ -141,6 +146,7 @@ class TableWidget : public QTableView {
    signals:
     void tableSelectionChanged(int row, int column, const QStringList& rowData);
     void rowUpdated(int row, int column, const QStringList& rowData);
+    void tableChanged();
 
    public slots:
     void filterTable(const QString& query,

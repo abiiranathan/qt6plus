@@ -1,4 +1,5 @@
 #include "TableWidget.h"
+#include <iostream>
 
 // =============== HtmlPreviewWidget oveerides paintEvent =========
 HtmlPreviewWidget::HtmlPreviewWidget(QString html)
@@ -29,7 +30,8 @@ CustomTableModel::CustomTableModel(const QList<int>& editableColumns, const QLis
                                    QObject* parent)
     : QStandardItemModel(parent),
       editableColumns(editableColumns),
-      disabledColumns(disabledColumns) {}
+      disabledColumns(disabledColumns) {
+}
 
 Qt::ItemFlags CustomTableModel::flags(const QModelIndex& index) const {
     if (!index.isValid())
@@ -37,14 +39,31 @@ Qt::ItemFlags CustomTableModel::flags(const QModelIndex& index) const {
 
     if (editableColumns.contains(index.column()))
         return Qt::ItemFlags(Qt::ItemIsSelectable | Qt::ItemIsEditable |
-                             Qt::ItemIsEnabled);  // Enable editing for the specified columns
+                             Qt::ItemIsEnabled);
 
-    // Disable editing for the specified columns
     if (disabledColumns.contains(index.column()))
         return Qt::ItemFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
-    // Default behavior for other columns
     return QStandardItemModel::flags(index);
+}
+
+// override setData to handle custom behavior
+bool CustomTableModel::setData(const QModelIndex& index, const QVariant& value, int role) {
+    if (role == Qt::EditRole) {
+        // Check if the column is editable
+        if (editableColumns.contains(index.column())) {
+            return QStandardItemModel::setData(index, value, role);
+        }
+    }
+    return false;
+}
+
+QList<int> CustomTableModel::getEditableColumns() const {
+    return editableColumns;
+}
+
+QList<int> CustomTableModel::getDisabledColumns() const {
+    return disabledColumns;
 }
 
 // ============== TableWidget implementation ========================
@@ -57,7 +76,10 @@ TableWidget::TableWidget(QWidget* parent, QList<int> editableColumns,
     : QTableView(parent) {
     tableModel = new CustomTableModel(editableColumns, disabledColumns, this);
 
+    setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::EditKeyPressed);
+
     proxyModel = new QSortFilterProxyModel(this);
+
     proxyModel->setSourceModel(tableModel);
     proxyModel->setFilterKeyColumn(-1);
     setModel(proxyModel);
@@ -191,6 +213,7 @@ void TableWidget::setData(const QVector<QStringList>& data) {
             tableModel->setItem(row, column, item);
         }
     }
+    emit tableChanged();
 }
 
 // Sets the signals and slots for double click on table. Calls handler with data for
@@ -396,11 +419,13 @@ void TableWidget::appendRow(const QStringList& rowData) {
 void TableWidget::deleteRow(int row) {
     if (row >= 0 && row < tableModel->rowCount()) {
         tableModel->removeRow(row);
+        emit tableChanged();
     }
 }
 
 void TableWidget::clearTable() {
     tableModel->clear();
+    emit tableChanged();
 }
 
 void TableWidget::appendRows(const QVector<QStringList>& rowsData) {
@@ -414,6 +439,7 @@ void TableWidget::appendRows(const QVector<QStringList>& rowsData) {
         const QStringList& rowData = rowsData[row];
         setRowData(currentRowCount + row, rowData);
     }
+    emit tableChanged();
 }
 
 auto TableWidget::getAllTableData() const {
@@ -571,6 +597,7 @@ void TableWidget::filterTable(const QString& query,
                               int column) {
 
     if (query.isEmpty()) {
+        proxyModel->setFilterRegularExpression(QRegularExpression());
         proxyModel->invalidate();
         return;
     }
@@ -579,6 +606,7 @@ void TableWidget::filterTable(const QString& query,
     if (column >= -1 && column < model()->columnCount()) {
         proxyModel->setFilterKeyColumn(column);
     }
+
     QRegularExpression regex(query, caseSensitivity);
     proxyModel->setFilterRegularExpression(regex);
 }
@@ -640,6 +668,8 @@ void TableWidget::setRowData(int row, const QStringList& rowData) {
         item->setText(text);
         tableModel->setItem(row, column, item);
     }
+
+    emit tableChanged();
 }
 
 // use fieldNames in generating csv and json
