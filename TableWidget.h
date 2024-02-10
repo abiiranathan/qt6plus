@@ -15,6 +15,9 @@
 #include <optional>
 #include <tuple>
 
+// Remove the '-mno-direct-extern-access' flag
+// #ifndef TABLE_WIDGET_H
+
 class HtmlPreviewWidget : public QPrintPreviewWidget {
    public:
     HtmlPreviewWidget(QString html);

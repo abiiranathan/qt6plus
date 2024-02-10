@@ -1,5 +1,3 @@
-// EnhancedTreeView.cpp
-
 #include "EnhancedTreeView.h"
 #include <QKeyEvent>
 #include <QStandardItem>
@@ -120,5 +118,13 @@ void EnhancedTreeView::keyPressEvent(QKeyEvent* event) {
         event->accept();
     } else {
         QTreeView::keyPressEvent(event);
+    }
+}
+
+void EnhancedTreeView::clear() {
+    QStandardItemModel* model = qobject_cast<QStandardItemModel*>(this->model());
+
+    if (model) {
+        model->clear();
     }
 }

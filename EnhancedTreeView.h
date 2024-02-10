@@ -18,9 +18,12 @@ class EnhancedTreeView : public QTreeView {
     void expandSelectedItems();
     void collapseSelectedItems();
     void toggleExpandCollapseSelectedItems();
+    //Clears the contents of the EnhancedTreeView.
+    void clear();
 
     void deleteSelectedItems();
     QModelIndex addItem(const QStringList& itemData, const QModelIndex& parent = QModelIndex());
+
     void setHeaders(const QStringList& headers);
     QModelIndexList getCurrentSelection() const;
     void setItemIcon(const QModelIndex& index, const QIcon& icon);
