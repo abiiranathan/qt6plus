@@ -142,9 +142,7 @@ void TableWidget::setFieldNames(const QStringList& fieldNames_) {
     fieldNames = fieldNames_;
 }
 
-/**
-     * Sets vertical headers for the table.
-     */
+// Sets vertical headers for the table.
 void TableWidget::setVerticalHeaders(const QStringList& headers) {
     verticalHeaders = headers;
     if (!verticalHeaders.isEmpty())

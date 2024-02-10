@@ -19,14 +19,14 @@ void Splitter::setWidgetSizes(int first, int second, int third) {
 }
 
 void Splitter::setWidgetStretchFactors(int first, int second) {
-    QList<int> stretchFactors;
+    QVector<int> stretchFactors;
     stretchFactors.append(first);
     stretchFactors.append(second);
     setStretchFactors(stretchFactors);
 }
 
 void Splitter::setWidgetStretchFactors(int first, int second, int third) {
-    QList<int> stretchFactors;
+    QVector<int> stretchFactors;
     stretchFactors.append(first);
     stretchFactors.append(second);
     stretchFactors.append(third);

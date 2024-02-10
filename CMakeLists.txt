@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.5)
 
 project(qt6plus LANGUAGES CXX)
 
@@ -12,28 +12,8 @@ set(BUILD_EXAMPLES ON)
 # Add bcrypt library
 add_subdirectory(Bcrypt)
 
-
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS
-        Core
-        Widgets
-        PrintSupport
-        Sql
-        Network
-        Gui
-        Multimedia
-        Bluetooth
- )
-
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS
-    Core
-    Widgets
-    PrintSupport
-    Sql
-    Network
-    Gui
-    Multimedia
-    Bluetooth
-)
+find_package(QT NAMES Qt6 REQUIRED COMPONENTS Core Widgets PrintSupport Sql Network Gui Multimedia Bluetooth)
+find_package(Qt6 REQUIRED COMPONENTS Core Widgets PrintSupport Sql Network Gui Multimedia Bluetooth)
 
 add_library(qt6plus SHARED
   Splitter.h
@@ -62,14 +42,14 @@ add_library(qt6plus SHARED
 )
 
 target_link_libraries(qt6plus PUBLIC
-    Qt${QT_VERSION_MAJOR}::Widgets
-    Qt${QT_VERSION_MAJOR}::Core
-    Qt${QT_VERSION_MAJOR}::PrintSupport
-    Qt${QT_VERSION_MAJOR}::Sql
-    Qt${QT_VERSION_MAJOR}::Network
-    Qt${QT_VERSION_MAJOR}::Gui
-    Qt${QT_VERSION_MAJOR}::Multimedia
-    Qt${QT_VERSION_MAJOR}::Bluetooth
+    Qt6::Widgets
+    Qt6::Core
+    Qt6::PrintSupport
+    Qt6::Sql
+    Qt6::Network
+    Qt6::Gui
+    Qt6::Multimedia
+    Qt6::Bluetooth
 )
 
 target_compile_definitions(qt6plus PRIVATE SPLITTER_LIBRARY)

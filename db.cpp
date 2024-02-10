@@ -50,7 +50,8 @@ int main(int argc, char** argv) {
     QSqlDatabase::database().close();
 
     QApplication app(argc, argv);
-    HttpClient client;
+
+    // HttpClient client;
 
     // Syncronous API
     //    HttpResponse res = client.get_sync("https://example.com");
@@ -61,16 +62,16 @@ int main(int argc, char** argv) {
     //        qDebug() << res.errorString << "\n";
     //    }
 
-    client.get("https://google.com");
-    QObject::connect(&client, &HttpClient::finished, [](const HttpResponse& res) {
-        if (res.OK) {
-            qDebug() << res.data << "\n";
-        } else {
-            qDebug() << res.errorString << "\n";
-        }
+    // client.get("https://google.com");
+    // QObject::connect(&client, &HttpClient::finished, [](const HttpResponse& res) {
+    //     if (res.OK) {
+    //         qDebug() << res.data << "\n";
+    //     } else {
+    //         qDebug() << res.errorString << "\n";
+    //     }
 
-        qDebug() << res.statusCode;
-    });
+    //     qDebug() << res.statusCode;
+    // });
 
     return app.exec();
 }

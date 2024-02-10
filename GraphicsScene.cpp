@@ -1,4 +1,5 @@
 #include "GraphicsScene.h"
+#include "qmath.h"
 
 GraphicsScene::GraphicsScene(QObject* parent)
     : QGraphicsScene(parent) {

@@ -50,17 +50,15 @@ int main(int argc, char* argv[]) {
     mediaPlayer.setAudioOutput(audioOutput);
 
     // Connect the actions to their respective slots
-    QObject::connect(playAction, &QAction::triggered, [&]() {
+    QObject::connect(playAction, &QAction::triggered, nullptr, [&]() {
         QModelIndex currentIndex = treeView.currentIndex();
         QString filePath = model.item(currentIndex.row(), 3)->text();
-
-        qInfo() << filePath;
 
         mediaPlayer.setSource(QUrl::fromLocalFile(filePath));
         mediaPlayer.play();
     });
 
-    QObject::connect(stopAction, &QAction::triggered, [&]() {
+    QObject::connect(stopAction, &QAction::triggered, nullptr, [&]() {
         mediaPlayer.stop();
     });
 

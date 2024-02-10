@@ -12,6 +12,7 @@
 #include <QTableWidget>
 #include <QTableWidgetItem>
 #include <QtWidgets>
+#include <optional>
 #include <tuple>
 
 class HtmlPreviewWidget : public QPrintPreviewWidget {

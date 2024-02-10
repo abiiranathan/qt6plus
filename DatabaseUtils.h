@@ -1,6 +1,8 @@
 #ifndef DATABASE_UTILS_H
 #define DATABASE_UTILS_H
 
+#include <QDebug>
+#include <QMap>
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
