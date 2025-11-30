@@ -1,13 +1,14 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.30)
 
 project(qt6plus LANGUAGES CXX)
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(BUILD_EXAMPLES OFF)
+set(BUILD_EXAMPLES ON)
 
 # Add bcrypt library
 add_subdirectory(Bcrypt)
@@ -16,28 +17,26 @@ find_package(QT NAMES Qt6 REQUIRED COMPONENTS Core Widgets PrintSupport Sql Netw
 find_package(Qt6 REQUIRED COMPONENTS Core Widgets PrintSupport Sql Network Gui Multimedia Bluetooth)
 
 add_library(qt6plus SHARED
-  Splitter.h
+  Splitter.hpp
   Splitter.cpp
 
-  GraphicsScene.h
+  GraphicsScene.hpp
   GraphicsScene.cpp
 
-  Delegates.h
-  TableWidget.h
+  Delegates.hpp
+  TableWidget.hpp
   TableWidget.cpp
+  
+  DatabaseOptions.hpp  
+  DatabaseConnection.hpp
 
-  errormanager.h
-  errormanager.cpp
-  DatabaseUtils.h
-  DatabaseUtils.cpp
-
-  httpclient.h
+  httpclient.hpp
   httpclient.cpp
 
-  EnhancedTreeView.h
+  EnhancedTreeView.hpp
   EnhancedTreeView.cpp
 
-  BluetoothDevice.h
+  BluetoothDevice.hpp
   BluetoothDevice.cpp
 )
 
@@ -58,9 +57,6 @@ target_compile_definitions(qt6plus PRIVATE SPLITTER_LIBRARY)
 if(BUILD_EXAMPLES)
     add_executable(main main.cpp)
     target_link_libraries(main PRIVATE qt6plus bcrypt)
-
-    add_executable(db db.cpp)
-    target_link_libraries(db PRIVATE qt6plus)
 
     add_executable(treeview treeview.cpp)
     target_link_libraries(treeview PRIVATE qt6plus)

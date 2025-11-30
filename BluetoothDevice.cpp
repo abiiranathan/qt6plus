@@ -1,15 +1,13 @@
-// BluetoothDevice.cpp
-
-#include "BluetoothDevice.h"
+#include "BluetoothDevice.hpp"
 #include <QEventLoop>
 #include <QTimer>
 
-BluetoothDevice::BluetoothDevice(QObject* parent)
-    : QObject(parent) {
+BluetoothDevice::BluetoothDevice(QObject* parent) : QObject(parent) {
     m_discoveryAgent = new QBluetoothDeviceDiscoveryAgent(this);
     m_socket = new QBluetoothSocket(QBluetoothServiceInfo::RfcommProtocol, this);
 
-    connect(m_discoveryAgent, &QBluetoothDeviceDiscoveryAgent::deviceDiscovered, this, &BluetoothDevice::deviceDiscoveredHandler);
+    connect(m_discoveryAgent, &QBluetoothDeviceDiscoveryAgent::deviceDiscovered, this,
+            &BluetoothDevice::deviceDiscoveredHandler);
     connect(m_socket, &QBluetoothSocket::connected, this, &BluetoothDevice::socketConnected);
     connect(m_socket, &QBluetoothSocket::disconnected, this, &BluetoothDevice::socketDisconnected);
     connect(m_socket, &QBluetoothSocket::readyRead, this, &BluetoothDevice::socketReadyRead);
@@ -23,7 +21,8 @@ void BluetoothDevice::discoverDevices() {
     m_discoveryAgent->start();
 }
 
-bool BluetoothDevice::connectToDevice(const QBluetoothDeviceInfo& deviceInfo, const QString& serviceUuid) {
+bool BluetoothDevice::connectToDevice(const QBluetoothDeviceInfo& deviceInfo,
+                                      const QString& serviceUuid) {
     if (m_socket->state() == QBluetoothSocket::SocketState::ConnectedState) {
         disconnectFromDevice();
     }
@@ -42,11 +41,9 @@ bool BluetoothDevice::connectToDevice(const QBluetoothDeviceInfo& deviceInfo, co
         loop.quit();
     });
 
-    QObject::connect(&timer, &QTimer::timeout, this, [&loop]() {
-        loop.quit();
-    });
+    QObject::connect(&timer, &QTimer::timeout, this, [&loop]() { loop.quit(); });
 
-    timer.start(5000);  // Timeout after 5 seconds
+    timer.start(10000);  // Timeout after 10 seconds
     loop.exec();
 
     return connected;

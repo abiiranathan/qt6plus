@@ -1,5 +1,3 @@
-// EnhancedTreeView.h
-
 #ifndef ENHANCEDTREEVIEW_H
 #define ENHANCEDTREEVIEW_H
 

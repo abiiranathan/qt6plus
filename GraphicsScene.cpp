@@ -1,8 +1,7 @@
-#include "GraphicsScene.h"
+#include "GraphicsScene.hpp"
 #include "qmath.h"
 
-GraphicsScene::GraphicsScene(QObject* parent)
-    : QGraphicsScene(parent) {
+GraphicsScene::GraphicsScene(QObject* parent) : QGraphicsScene(parent) {
     currentPen = QPen(Qt::black);
     currentBrush = QBrush(Qt::transparent);
 
@@ -112,14 +111,14 @@ void GraphicsScene::wheelEvent(QGraphicsSceneWheelEvent* event) {
 void GraphicsScene::keyPressEvent(QKeyEvent* event) {
     if (event->modifiers() == Qt::ControlModifier) {
         if (event->key() == Qt::Key_S) {
-            QString filePath = QFileDialog::getSaveFileName(
-                nullptr, "Save Image", QString(), "PNG Image (*.png)");
+            QString filePath =
+                QFileDialog::getSaveFileName(nullptr, "Save Image", QString(), "PNG Image (*.png)");
             if (!filePath.isEmpty()) {
                 saveToFile(filePath);
             }
         } else if (event->key() == Qt::Key_O) {
-            QString filePath = QFileDialog::getOpenFileName(
-                nullptr, "Import Image", QString(), "PNG Image (*.png)");
+            QString filePath = QFileDialog::getOpenFileName(nullptr, "Import Image", QString(),
+                                                            "PNG Image (*.png)");
 
             if (!filePath.isEmpty()) {
                 importFromFile(filePath);
@@ -202,9 +201,8 @@ void GraphicsScene::importFromFile(const QString& filePath) {
 
     clear();
     QGraphicsPixmapItem* pixmapItem = addPixmap(QPixmap::fromImage(image));
-    pixmapItem->setPos(
-        sceneRect().topLeft());  // Set the position of the pixmap to the
-                                 // top-left corner of the scene
+    pixmapItem->setPos(sceneRect().topLeft());  // Set the position of the pixmap to the
+                                                // top-left corner of the scene
 }
 
 void GraphicsScene::saveToFile(const QString& filePath) {
@@ -215,8 +213,7 @@ void GraphicsScene::saveToFile(const QString& filePath) {
     image.save(filePath);
 }
 
-void GraphicsScene::drawTriangle(const QPointF& position, qreal size,
-                                 const QPen& pen,
+void GraphicsScene::drawTriangle(const QPointF& position, qreal size, const QPen& pen,
                                  const QBrush& brush) {
     // Create a QGraphicsPolygonItem and add it to the scene
     QGraphicsPolygonItem* triangleItem = new QGraphicsPolygonItem();
@@ -224,8 +221,7 @@ void GraphicsScene::drawTriangle(const QPointF& position, qreal size,
 
     // Define the triangle's points
     QPolygonF trianglePolygon;
-    trianglePolygon << QPointF(0, 0) << QPointF(size, 0)
-                    << QPointF(size / 2, size);
+    trianglePolygon << QPointF(0, 0) << QPointF(size, 0) << QPointF(size / 2, size);
 
     // Set the triangle's polygon and properties
     triangleItem->setPolygon(trianglePolygon);
@@ -236,8 +232,7 @@ void GraphicsScene::drawTriangle(const QPointF& position, qreal size,
 }
 
 void GraphicsScene::drawTriangle(const QPointF& point1, const QPointF& point2,
-                                 const QPointF& point3, const QPen& pen,
-                                 const QBrush& brush) {
+                                 const QPointF& point3, const QPen& pen, const QBrush& brush) {
     // Create a QPainterPath and move to the first point
     QPainterPath path;
     path.moveTo(point1);
@@ -258,8 +253,7 @@ void GraphicsScene::drawTriangle(const QPointF& point1, const QPointF& point2,
     addItem(pathItem);
 }
 
-void GraphicsScene::createSquare(const QPointF& position, qreal size,
-                                 const QPen& pen,
+void GraphicsScene::createSquare(const QPointF& position, qreal size, const QPen& pen,
                                  const QBrush& brush) {
     // Create a QGraphicsRectItem and add it to the scene
     QGraphicsRectItem* squareItem = new QGraphicsRectItem();
@@ -275,8 +269,7 @@ void GraphicsScene::createSquare(const QPointF& position, qreal size,
 }
 
 void GraphicsScene::createRectangle(const QPointF& position, qreal width, qreal height,
-                                    const QPen& pen,
-                                    const QBrush& brush) {
+                                    const QPen& pen, const QBrush& brush) {
     // Create a QGraphicsRectItem and add it to the scene
     QGraphicsRectItem* rectangleItem = new QGraphicsRectItem();
     rectangleItem->setPos(position);
@@ -289,8 +282,7 @@ void GraphicsScene::createRectangle(const QPointF& position, qreal width, qreal 
     addItem(rectangleItem);  // Add the rectangle item to the scene
 }
 
-void GraphicsScene::createCircle(const QPointF& position, qreal size,
-                                 const QPen& pen,
+void GraphicsScene::createCircle(const QPointF& position, qreal size, const QPen& pen,
                                  const QBrush& brush) {
     QGraphicsEllipseItem* circleItem = new QGraphicsEllipseItem();
     circleItem->setPos(position);
@@ -303,8 +295,7 @@ void GraphicsScene::createCircle(const QPointF& position, qreal size,
     addItem(circleItem);  // Add the circle item to the scene
 }
 
-void GraphicsScene::createSphere(const QPointF& position, const qreal size,
-                                 const QPen& pen,
+void GraphicsScene::createSphere(const QPointF& position, const qreal size, const QPen& pen,
                                  const QBrush& brush) {
     // Create a QGraphicsEllipseItem and add it to the scene
     QGraphicsEllipseItem* sphereItem = new QGraphicsEllipseItem();
@@ -317,9 +308,8 @@ void GraphicsScene::createSphere(const QPointF& position, const qreal size,
     addItem(sphereItem);
 }
 
-void GraphicsScene::drawQuadraticCurve(const QPointF& startPoint,
-                                       const QPointF& controlPoint, const QPointF& endPoint,
-                                       const QPen& pen,
+void GraphicsScene::drawQuadraticCurve(const QPointF& startPoint, const QPointF& controlPoint,
+                                       const QPointF& endPoint, const QPen& pen,
                                        const QBrush& brush) {
     // Create a QPainterPath and move to the start point
     QPainterPath path;
@@ -341,10 +331,8 @@ void GraphicsScene::drawQuadraticCurve(const QPointF& startPoint,
 }
 
 void GraphicsScene::drawBezierCurve(const QPointF& startPoint, const QPointF& endPoint,
-                                    const QPointF& controlPoint1,
-                                    const QPointF& controlPoint2,
-                                    const QPen& pen,
-                                    const QBrush& brush) {
+                                    const QPointF& controlPoint1, const QPointF& controlPoint2,
+                                    const QPen& pen, const QBrush& brush) {
     // Create a QPainterPath and move to the start point
     QPainterPath path;
     path.moveTo(startPoint);
@@ -362,16 +350,14 @@ void GraphicsScene::drawBezierCurve(const QPointF& startPoint, const QPointF& en
     addItem(pathItem);
 }
 
-void GraphicsScene::addText(const QPointF& startPoint, const QString& text,
-                            const QFont& font) {
+void GraphicsScene::addText(const QPointF& startPoint, const QString& text, const QFont& font) {
     QGraphicsTextItem* textItem = new QGraphicsTextItem(text);
     textItem->setFont(font);
     textItem->setPos(startPoint);
     addItem(textItem);
 }
 
-void GraphicsScene::addHTMLText(const QPointF& startPoint, const QString& html,
-                                const QFont& font) {
+void GraphicsScene::addHTMLText(const QPointF& startPoint, const QString& html, const QFont& font) {
     QGraphicsTextItem* textItem = new QGraphicsTextItem();
     textItem->setHtml(html);
     textItem->setFont(font);

@@ -1,11 +1,9 @@
-#include "EnhancedTreeView.h"
+#include "EnhancedTreeView.hpp"
 #include <QKeyEvent>
 #include <QStandardItem>
 #include <QStandardItemModel>
 
-EnhancedTreeView::EnhancedTreeView(QWidget* parent)
-    : QTreeView(parent) {
-}
+EnhancedTreeView::EnhancedTreeView(QWidget* parent) : QTreeView(parent) {}
 
 void EnhancedTreeView::expandAllItems() {
     expandAll();

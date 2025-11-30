@@ -1,14 +1,14 @@
-#include "httpclient.h"
+#include "httpclient.hpp"
 
 HttpClient::HttpClient(QObject* parent)
-    : QObject(parent), manager(new QNetworkAccessManager(this)){};
+    : QObject(parent), manager(new QNetworkAccessManager(this)) {};
 HttpClient::HttpClient(QObject* parent, const QMap<QString, QString>& headers)
-    : QObject(parent), headers(headers), manager(new QNetworkAccessManager(this)){};
+    : QObject(parent), manager(new QNetworkAccessManager(this)), headers(headers) {};
 HttpClient::~HttpClient() {
     delete manager;
 }
 
-void HttpClient::setRootCA(QString certPath) {
+void HttpClient::setRootCA(const QString& certPath) {
     QFile file(certPath);
 
     if (!file.open(QIODevice::ReadOnly)) {
@@ -78,7 +78,7 @@ void HttpClient::del(const QString& url) noexcept {
 }
 
 void HttpClient::onReplyFinished() {
-    QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
+    auto* reply = qobject_cast<QNetworkReply*>(sender());
     bool requestFailed = reply->error() != QNetworkReply::NoError;
 
     QByteArray responseData = reply->readAll();
@@ -89,11 +89,10 @@ void HttpClient::onReplyFinished() {
 
     const bool ok = !requestFailed && statusCode >= 200 && statusCode < 300;
 
-    HttpResponse response{
-        .OK = ok,
-        .statusCode = statusCode,
-        .data = ok ? responseData : QByteArray(),
-        .errorString = ok ? QString() : responseData};
+    HttpResponse response{.OK = ok,
+                          .statusCode = statusCode,
+                          .data = ok ? responseData : QByteArray(),
+                          .errorString = ok ? QString() : responseData};
 
     // We have a non-HTTP error
     if (statusCode == 0) {
@@ -173,11 +172,10 @@ HttpResponse HttpClient::waitForResponse(QNetworkReply* reply) {
 
     const bool ok = !requestFailed && statusCode >= 200 && statusCode < 300;
 
-    HttpResponse response{
-        .OK = ok,
-        .statusCode = statusCode,
-        .data = ok ? responseData : QByteArray(),
-        .errorString = ok ? QString() : responseData};
+    HttpResponse response{.OK = ok,
+                          .statusCode = statusCode,
+                          .data = ok ? responseData : QByteArray(),
+                          .errorString = ok ? QString() : responseData};
 
     // We have a non-HTTP error
     if (statusCode == 0) {
@@ -187,7 +185,7 @@ HttpResponse HttpClient::waitForResponse(QNetworkReply* reply) {
 }
 
 void writeFile(const QString& path, const QByteArray& data) {
-    QFile* file = new QFile(path);
+    auto* file = new QFile(path);
     if (file->open(QIODevice::WriteOnly)) {
         file->write(data);
         file->close();

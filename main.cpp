@@ -7,10 +7,10 @@
 #include <QWidget>
 #include <iostream>
 #include <string>
-#include "Delegates.h"
-#include "GraphicsScene.h"
-#include "Splitter.h"
-#include "TableWidget.h"
+#include "Delegates.hpp"
+#include "GraphicsScene.hpp"
+#include "Splitter.hpp"
+#include "TableWidget.hpp"
 
 int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
@@ -32,13 +32,12 @@ int main(int argc, char* argv[]) {
                                 QStringList{"id", "name", "dob", "sex", "created_at", "time"});
 
     table->setItemDelegateForColumn(2, new DateDelegate());
-    table->setItemDelegateForColumn(3, new ComboBoxDelegate(nullptr, QStringList{"Male", "Female"}));
+    table->setItemDelegateForColumn(3,
+                                    new ComboBoxDelegate(nullptr, QStringList{"Male", "Female"}));
     table->setItemDelegateForColumn(4, new DateTimeDelegate());
     table->setItemDelegateForColumn(5, new TimeDelegate());
 
-    table->setDoubleClickHandler([](int row, int col, auto data) {
-        qDebug() << data << "\n";
-    });
+    table->setDoubleClickHandler([](int row, int col, auto data) { qDebug() << data << "\n"; });
 
     // Get the vertical header
     QHeaderView* verticalHeader = table->verticalHeader();
@@ -46,9 +45,9 @@ int main(int argc, char* argv[]) {
     // Hide the row numbers
     verticalHeader->setVisible(false);
 
-    table->setData(
-        QVector<QStringList>{{"1", "Abiira Nathan", "1989-05-18", "Male", "2023-06-07T06:30:13.075Z", "16:30:34"},
-                             {"2", "Kwikiriza Dan", "2005-06-12", "Female", "null", "00:30:00"}});
+    table->setData(QVector<QStringList>{
+        {"1", "Abiira Nathan", "1989-05-18", "Male", "2023-06-07T06:30:13.075Z", "16:30:34"},
+        {"2", "Kwikiriza Dan", "2005-06-12", "Female", "null", "00:30:00"}});
 
     // Add widgets to the splitter
     splitter.addWidget(table, 1);
@@ -88,17 +87,14 @@ int main(int argc, char* argv[]) {
     scene.drawBezierCurve(QPointF(100, 100), QPointF(300, 100), QPointF(150, 50),
                           QPointF(250, 150));
 
-    scene.drawQuadraticCurve(QPointF(100, 100), QPointF(300, 100),
-                             QPointF(200, 0));
+    scene.drawQuadraticCurve(QPointF(100, 100), QPointF(300, 100), QPointF(200, 0));
 
-    scene.createRectangle(QPointF(100, 200), 200, 60, QPen(Qt::cyan),
-                          QBrush(Qt::DiagCrossPattern));
+    scene.createRectangle(QPointF(100, 200), 200, 60, QPen(Qt::cyan), QBrush(Qt::DiagCrossPattern));
 
-    scene.addText(QPoint(10, 200), "HELLO ABIIRA NATHAN",
-                  QFont("Arial", 18, 600));
+    scene.addText(QPoint(10, 200), "HELLO ABIIRA NATHAN", QFont("Arial", 18, 600));
 
-    scene.drawTriangle(QPointF(20, 50), QPointF(200, 75), QPointF(300, 300),
-                       QPen(Qt::cyan), QBrush(Qt::blue));
+    scene.drawTriangle(QPointF(20, 50), QPointF(200, 75), QPointF(300, 300), QPen(Qt::cyan),
+                       QBrush(Qt::blue));
 
     splitter.addWidget(&view);
     splitter.setWidgetStretchFactors(1, 1);
@@ -107,8 +103,10 @@ int main(int argc, char* argv[]) {
     std::string password = "strong_password";
     std::string hashedPassword = bcrypt::generateHash(password);
 
-    std::cout << "Password Valid: " << bcrypt::validatePassword(password, hashedPassword) << std::endl;
-    std::cout << "Password Valid: " << bcrypt::validatePassword("Other password", hashedPassword) << std::endl;
+    std::cout << "Password Valid: " << bcrypt::validatePassword(password, hashedPassword)
+              << std::endl;
+    std::cout << "Password Valid: " << bcrypt::validatePassword("Other password", hashedPassword)
+              << std::endl;
     mainWindow.show();
     return app.exec();
 }

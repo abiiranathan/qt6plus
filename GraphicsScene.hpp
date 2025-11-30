@@ -45,46 +45,35 @@ class GraphicsScene : public QGraphicsScene {
     void importFromFile(const QString& filePath);
     void saveToFile(const QString& filePath);
 
-    void drawTriangle(const QPointF& position, qreal size,
-                      const QPen& pen = QPen(Qt::black),
+    void drawTriangle(const QPointF& position, qreal size, const QPen& pen = QPen(Qt::black),
                       const QBrush& brush = Qt::NoBrush);
 
-    void drawTriangle(const QPointF& point1, const QPointF& point2,
-                      const QPointF& point3, const QPen& pen = QPen(Qt::black),
-                      const QBrush& brush = Qt::NoBrush);
+    void drawTriangle(const QPointF& point1, const QPointF& point2, const QPointF& point3,
+                      const QPen& pen = QPen(Qt::black), const QBrush& brush = Qt::NoBrush);
 
-    void createSquare(const QPointF& position, qreal size,
-                      const QPen& pen = QPen(Qt::black),
+    void createSquare(const QPointF& position, qreal size, const QPen& pen = QPen(Qt::black),
                       const QBrush& brush = Qt::NoBrush);
 
     void createRectangle(const QPointF& position, qreal width, qreal height,
-                         const QPen& pen = QPen(Qt::black),
-                         const QBrush& brush = Qt::NoBrush);
+                         const QPen& pen = QPen(Qt::black), const QBrush& brush = Qt::NoBrush);
 
-    void createCircle(const QPointF& position, qreal size,
-                      const QPen& pen = QPen(Qt::black),
+    void createCircle(const QPointF& position, qreal size, const QPen& pen = QPen(Qt::black),
                       const QBrush& brush = Qt::NoBrush);
 
-    void createSphere(const QPointF& position, const qreal size,
-                      const QPen& pen = QPen(Qt::black),
+    void createSphere(const QPointF& position, qreal size, const QPen& pen = QPen(Qt::black),
                       const QBrush& brush = Qt::NoBrush);
 
-    void drawQuadraticCurve(const QPointF& startPoint,
-                            const QPointF& controlPoint, const QPointF& endPoint,
-                            const QPen& pen = QPen(Qt::black),
+    void drawQuadraticCurve(const QPointF& startPoint, const QPointF& controlPoint,
+                            const QPointF& endPoint, const QPen& pen = QPen(Qt::black),
                             const QBrush& brush = Qt::NoBrush);
 
     void drawBezierCurve(const QPointF& startPoint, const QPointF& endPoint,
-                         const QPointF& controlPoint1,
-                         const QPointF& controlPoint2,
-                         const QPen& pen = QPen(Qt::black),
-                         const QBrush& brush = Qt::NoBrush);
+                         const QPointF& controlPoint1, const QPointF& controlPoint2,
+                         const QPen& pen = QPen(Qt::black), const QBrush& brush = Qt::NoBrush);
 
-    void addText(const QPointF& startPoint, const QString& text,
-                 const QFont& font = QFont());
+    void addText(const QPointF& startPoint, const QString& text, const QFont& font = QFont());
 
-    void addHTMLText(const QPointF& startPoint, const QString& html,
-                     const QFont& font = QFont());
+    void addHTMLText(const QPointF& startPoint, const QString& html, const QFont& font = QFont());
 
    private:
     QPen currentPen;

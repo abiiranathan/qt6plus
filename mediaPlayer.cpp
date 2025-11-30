@@ -1,11 +1,11 @@
 #include <QAction>
 #include <QApplication>
-#include <QAudioOutput>
-#include <QMediaPlayer>
+#include <QtMultimedia/QAudioOutput>
+#include <QtMultimedia/QMediaPlayer>
 
 #include <QMenu>
 #include <QStandardItemModel>
-#include "EnhancedTreeView.h"
+#include "EnhancedTreeView.hpp"
 
 int main(int argc, char* argv[]) {
     QApplication a(argc, argv);
@@ -20,7 +20,12 @@ int main(int argc, char* argv[]) {
 
     // Create a list of music tracks
     QList<Music> musicList;
-    musicList.append({"Highs and lows", "Artist 1", "Album 1", "/home/nabiizy/Music/Highs-and-lows.mp3"});
+    musicList.append({
+        .title = "Highs and lows",
+        .artist = "Artist 1",
+        .album = "Album 1",
+        .filePath = "/home/nabiizy/Downloads/music.mp3",
+    });
 
     // Create the model and set the custom data
     QStandardItemModel model;
@@ -41,12 +46,12 @@ int main(int argc, char* argv[]) {
                                       << "Album");
 
     // Create the context menu actions
-    QAction* playAction = new QAction("Play", &treeView);
-    QAction* stopAction = new QAction("Stop", &treeView);
+    auto* playAction = new QAction("Play", &treeView);
+    auto* stopAction = new QAction("Stop", &treeView);
 
     // Create the media player
     QMediaPlayer mediaPlayer;
-    auto audioOutput = new QAudioOutput;
+    auto* audioOutput = new QAudioOutput;
     mediaPlayer.setAudioOutput(audioOutput);
 
     // Connect the actions to their respective slots
@@ -58,9 +63,7 @@ int main(int argc, char* argv[]) {
         mediaPlayer.play();
     });
 
-    QObject::connect(stopAction, &QAction::triggered, nullptr, [&]() {
-        mediaPlayer.stop();
-    });
+    QObject::connect(stopAction, &QAction::triggered, nullptr, [&]() { mediaPlayer.stop(); });
 
     // Set the context menu policy to CustomContextMenu
     treeView.setContextMenuPolicy(Qt::CustomContextMenu);

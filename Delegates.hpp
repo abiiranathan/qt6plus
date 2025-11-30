@@ -14,15 +14,15 @@
 #include <QStyledItemDelegate>
 #include <QTextBrowser>
 #include <QTextEdit>
+#include <utility>
 
 class DateTimeDelegate : public QStyledItemDelegate {
    public:
-    DateTimeDelegate(QObject* parent = nullptr)
-        : QStyledItemDelegate(parent) {}
+    DateTimeDelegate(QObject* parent = nullptr) : QStyledItemDelegate(parent) {}
 
-    QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& option,
+    QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& /*option*/,
                           const QModelIndex& index) const override {
-        QDateTimeEdit* editor = new QDateTimeEdit(parent);
+        auto* editor = new QDateTimeEdit(parent);
         editor->setMinimumWidth(200);
 
         editor->setDisplayFormat("yyyy-MM-dd hh:mm:ss AP");
@@ -40,11 +40,17 @@ class DateTimeDelegate : public QStyledItemDelegate {
     }
 
     void setEditorData(QWidget* editor, const QModelIndex& index) const override {
-        QDateTimeEdit* dateTimeEditor = static_cast<QDateTimeEdit*>(editor);
+        auto* dateTimeEditor = qobject_cast<QDateTimeEdit*>(editor);
+        if (!dateTimeEditor) {
+            return;
+        }
+
         QString dateTimeStr = index.data().toString();
         if (!dateTimeStr.isEmpty()) {
             QDateTime dateTime = QDateTime::fromString(dateTimeStr, Qt::ISODate);
-            dateTimeEditor->setDateTime(dateTime);
+            if (dateTime.isValid()) {
+                dateTimeEditor->setDateTime(dateTime);
+            }
         } else {
             dateTimeEditor->clear();
         }
@@ -52,9 +58,14 @@ class DateTimeDelegate : public QStyledItemDelegate {
 
     void setModelData(QWidget* editor, QAbstractItemModel* model,
                       const QModelIndex& index) const override {
-        QDateTimeEdit* dateTimeEditor = static_cast<QDateTimeEdit*>(editor);
+        auto* dateTimeEditor = static_cast<QDateTimeEdit*>(editor);
         QString dateTimeStr = dateTimeEditor->dateTime().toString(Qt::ISODate);
         model->setData(index, dateTimeStr);
+    }
+
+    void updateEditorGeometry(QWidget* editor, const QStyleOptionViewItem& option,
+                              const QModelIndex& /*index*/) const override {
+        editor->setGeometry(option.rect);
     }
 };
 
@@ -63,13 +74,13 @@ class DateDelegate : public QStyledItemDelegate {
     DateDelegate(QObject* parent = nullptr, QDate defaultDate = QDate::currentDate(),
                  QDate minDate = QDate(), QDate maxDate = QDate())
         : QStyledItemDelegate(parent),
-          defaultDate(defaultDate),
           minDate(minDate),
-          maxDate(maxDate) {}
+          maxDate(maxDate),
+          defaultDate(defaultDate) {}
 
-    QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& option,
+    QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& /*option*/,
                           const QModelIndex& index) const override {
-        QDateEdit* editor = new QDateEdit(parent);
+        auto* editor = new QDateEdit(parent);
 
         // If minDate is set
         if (minDate != QDate()) {
@@ -91,15 +102,20 @@ class DateDelegate : public QStyledItemDelegate {
     }
 
     void setEditorData(QWidget* editor, const QModelIndex& index) const override {
-        QDateTimeEdit* dateEditor = static_cast<QDateTimeEdit*>(editor);
+        auto* dateEditor = static_cast<QDateTimeEdit*>(editor);
         dateEditor->setDateTime(QDateTime::fromString(index.data().toString(), "yyyy-MM-dd"));
     }
 
     void setModelData(QWidget* editor, QAbstractItemModel* model,
                       const QModelIndex& index) const override {
-        QDateTimeEdit* dateEditor = static_cast<QDateTimeEdit*>(editor);
+        auto* dateEditor = static_cast<QDateTimeEdit*>(editor);
         QString dateStr = dateEditor->dateTime().toString("yyyy-MM-dd");
         model->setData(index, dateStr);
+    }
+
+    void updateEditorGeometry(QWidget* editor, const QStyleOptionViewItem& option,
+                              const QModelIndex& /*index*/) const override {
+        editor->setGeometry(option.rect);
     }
 
    private:
@@ -108,16 +124,16 @@ class DateDelegate : public QStyledItemDelegate {
 
 class TimeDelegate : public QStyledItemDelegate {
    public:
-    TimeDelegate(QObject* parent = nullptr)
-        : QStyledItemDelegate(parent) {}
+    TimeDelegate(QObject* parent = nullptr) : QStyledItemDelegate(parent) {}
 
-    QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& option,
+    QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& /*option*/,
                           const QModelIndex& index) const override {
-        QTimeEdit* editor = new QTimeEdit(parent);
+        auto* editor = new QTimeEdit(parent);
         editor->setMinimumWidth(120);
         editor->setDisplayFormat("hh:mm:ss AP");
 
         QString timeStr = index.data().toString();
+
         if (!timeStr.isEmpty() && timeStr != "null") {
             QTime time = QTime::fromString(timeStr, Qt::ISODate);
             editor->setTime(time);
@@ -128,7 +144,7 @@ class TimeDelegate : public QStyledItemDelegate {
     }
 
     void setEditorData(QWidget* editor, const QModelIndex& index) const override {
-        QTimeEdit* timeEditor = static_cast<QTimeEdit*>(editor);
+        auto* timeEditor = static_cast<QTimeEdit*>(editor);
         QString timeStr = index.data().toString();
         if (!timeStr.isEmpty() && timeStr != "null") {
             QTime time = QTime::fromString(timeStr, Qt::ISODate);
@@ -140,9 +156,14 @@ class TimeDelegate : public QStyledItemDelegate {
 
     void setModelData(QWidget* editor, QAbstractItemModel* model,
                       const QModelIndex& index) const override {
-        QTimeEdit* timeEditor = static_cast<QTimeEdit*>(editor);
+        auto* timeEditor = static_cast<QTimeEdit*>(editor);
         QString timeStr = timeEditor->time().toString(Qt::ISODate);
         model->setData(index, timeStr);
+    }
+
+    void updateEditorGeometry(QWidget* editor, const QStyleOptionViewItem& option,
+                              const QModelIndex& /*index*/) const override {
+        editor->setGeometry(option.rect);
     }
 };
 
@@ -151,9 +172,9 @@ class SpinBoxDelegate : public QStyledItemDelegate {
     SpinBoxDelegate(QObject* parent = nullptr, int min = 0, int max = 100)
         : QStyledItemDelegate(parent), min(min), max(max) {}
 
-    QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& option,
+    QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& /*option*/,
                           const QModelIndex& index) const override {
-        QSpinBox* editor = new QSpinBox(parent);
+        auto* editor = new QSpinBox(parent);
 
         editor->setMinimum(min);
         editor->setMaximum(max);
@@ -162,14 +183,19 @@ class SpinBoxDelegate : public QStyledItemDelegate {
     }
 
     void setEditorData(QWidget* editor, const QModelIndex& index) const override {
-        QSpinBox* spinBox = static_cast<QSpinBox*>(editor);
+        auto* spinBox = static_cast<QSpinBox*>(editor);
         spinBox->setValue(index.data().toInt());
     }
 
     void setModelData(QWidget* editor, QAbstractItemModel* model,
                       const QModelIndex& index) const override {
-        QSpinBox* spinBox = static_cast<QSpinBox*>(editor);
+        auto* spinBox = static_cast<QSpinBox*>(editor);
         model->setData(index, spinBox->value());
+    }
+
+    void updateEditorGeometry(QWidget* editor, const QStyleOptionViewItem& option,
+                              const QModelIndex& /*index*/) const override {
+        editor->setGeometry(option.rect);
     }
 
    private:
@@ -178,87 +204,99 @@ class SpinBoxDelegate : public QStyledItemDelegate {
 
 class TextEditDelegate : public QStyledItemDelegate {
    public:
-    TextEditDelegate(QObject* parent = nullptr)
-        : QStyledItemDelegate(parent) {}
+    TextEditDelegate(QObject* parent = nullptr) : QStyledItemDelegate(parent) {}
 
-    QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& option,
+    QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& /*option*/,
                           const QModelIndex& index) const override {
-        QTextEdit* editor = new QTextEdit(parent);
+        auto* editor = new QTextEdit(parent);
 
         editor->setPlainText(index.data().toString());
         return editor;
     }
 
     void setEditorData(QWidget* editor, const QModelIndex& index) const override {
-        QTextEdit* textEdit = static_cast<QTextEdit*>(editor);
+        auto* textEdit = static_cast<QTextEdit*>(editor);
         textEdit->setPlainText(index.data().toString());
     }
 
     void setModelData(QWidget* editor, QAbstractItemModel* model,
                       const QModelIndex& index) const override {
-        QTextEdit* textEdit = static_cast<QTextEdit*>(editor);
+        auto* textEdit = static_cast<QTextEdit*>(editor);
         model->setData(index, textEdit->toPlainText());
+    }
+
+    void updateEditorGeometry(QWidget* editor, const QStyleOptionViewItem& option,
+                              const QModelIndex& /*index*/) const override {
+        editor->setGeometry(option.rect);
     }
 };
 
 class TextBrowserDelegate : public QStyledItemDelegate {
    public:
-    TextBrowserDelegate(QObject* parent = nullptr)
-        : QStyledItemDelegate(parent) {}
+    TextBrowserDelegate(QObject* parent = nullptr) : QStyledItemDelegate(parent) {}
 
-    QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& option,
+    QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& /*option*/,
                           const QModelIndex& index) const override {
-        QTextBrowser* editor = new QTextBrowser(parent);
+        auto* editor = new QTextBrowser(parent);
 
         editor->setHtml(index.data().toString());
         return editor;
     }
 
     void setEditorData(QWidget* editor, const QModelIndex& index) const override {
-        QTextBrowser* textBrowser = static_cast<QTextBrowser*>(editor);
+        auto* textBrowser = static_cast<QTextBrowser*>(editor);
         textBrowser->setPlainText(index.data().toString());
     }
 
     void setModelData(QWidget* editor, QAbstractItemModel* model,
                       const QModelIndex& index) const override {
-        QTextBrowser* textBrowser = static_cast<QTextBrowser*>(editor);
+        auto* textBrowser = static_cast<QTextBrowser*>(editor);
         model->setData(index, textBrowser->toHtml());
+    }
+
+    void updateEditorGeometry(QWidget* editor, const QStyleOptionViewItem& option,
+                              const QModelIndex& /*index*/) const override {
+        editor->setGeometry(option.rect);
     }
 };
 
 class LineEditDelegate : public QStyledItemDelegate {
    public:
-    LineEditDelegate(QObject* parent = nullptr)
-        : QStyledItemDelegate(parent) {}
+    LineEditDelegate(QObject* parent = nullptr) : QStyledItemDelegate(parent) {}
 
-    QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& option,
+    QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& /*option*/,
                           const QModelIndex& index) const override {
-        QLineEdit* editor = new QLineEdit(parent);
+        auto* editor = new QLineEdit(parent);
 
         editor->setText(index.data().toString());
         return editor;
     }
 
     void setEditorData(QWidget* editor, const QModelIndex& index) const override {
-        QLineEdit* lineEdit = static_cast<QLineEdit*>(editor);
+        auto* lineEdit = static_cast<QLineEdit*>(editor);
         lineEdit->setText(index.data().toString());
     }
 
     void setModelData(QWidget* editor, QAbstractItemModel* model,
                       const QModelIndex& index) const override {
-        QLineEdit* lineEdit = static_cast<QLineEdit*>(editor);
+        auto* lineEdit = static_cast<QLineEdit*>(editor);
         model->setData(index, lineEdit->text());
+    }
+
+    void updateEditorGeometry(QWidget* editor, const QStyleOptionViewItem& option,
+                              const QModelIndex& /*index*/) const override {
+        editor->setGeometry(option.rect);
     }
 };
 
 class ComboBoxDelegate : public QStyledItemDelegate {
    public:
-    ComboBoxDelegate(QObject* parent = nullptr, const QStringList& items = QStringList())
-        : QStyledItemDelegate(parent), items(items) {}
+    ComboBoxDelegate(QObject* parent = nullptr, QStringList items = QStringList())
+        : QStyledItemDelegate(parent), items(std::move(items)) {}
 
-    QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& option,
+    QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& /*option*/,
                           const QModelIndex& index) const override {
-        QComboBox* editor = new QComboBox(parent);
+        auto* editor = new QComboBox(parent);
 
         editor->addItems(items);
         editor->setCurrentText(index.data().toString());
@@ -266,14 +304,19 @@ class ComboBoxDelegate : public QStyledItemDelegate {
     }
 
     void setEditorData(QWidget* editor, const QModelIndex& index) const override {
-        QComboBox* comboBox = static_cast<QComboBox*>(editor);
+        auto* comboBox = static_cast<QComboBox*>(editor);
         comboBox->setCurrentText(index.data().toString());
     }
 
     void setModelData(QWidget* editor, QAbstractItemModel* model,
                       const QModelIndex& index) const override {
-        QComboBox* comboBox = static_cast<QComboBox*>(editor);
+        auto* comboBox = static_cast<QComboBox*>(editor);
         model->setData(index, comboBox->currentText());
+    }
+
+    void updateEditorGeometry(QWidget* editor, const QStyleOptionViewItem& option,
+                              const QModelIndex& /*index*/) const override {
+        editor->setGeometry(option.rect);
     }
 
    private:
@@ -282,61 +325,71 @@ class ComboBoxDelegate : public QStyledItemDelegate {
 
 class RadioButtonDelegate : public QStyledItemDelegate {
    public:
-    RadioButtonDelegate(QObject* parent = nullptr)
-        : QStyledItemDelegate(parent) {}
+    RadioButtonDelegate(QObject* parent = nullptr) : QStyledItemDelegate(parent) {}
 
-    QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& option,
+    QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& /*option*/,
                           const QModelIndex& index) const override {
-        QRadioButton* editor = new QRadioButton(parent);
+        auto* editor = new QRadioButton(parent);
 
         editor->setChecked(index.data().toBool());
         return editor;
     }
 
     void setEditorData(QWidget* editor, const QModelIndex& index) const override {
-        QRadioButton* radioButton = static_cast<QRadioButton*>(editor);
+        auto* radioButton = static_cast<QRadioButton*>(editor);
         radioButton->setChecked(index.data().toBool());
     }
 
-    void setModelData(QWidget* editor, QAbstractItemModel* model, const QModelIndex& index) {
-        QRadioButton* radioButton = static_cast<QRadioButton*>(editor);
+    void setModelData(QWidget* editor, QAbstractItemModel* model,
+                      const QModelIndex& index) const override {
+        auto* radioButton = static_cast<QRadioButton*>(editor);
         model->setData(index, radioButton->isChecked());
+    }
+
+    void updateEditorGeometry(QWidget* editor, const QStyleOptionViewItem& option,
+                              const QModelIndex& /*index*/) const override {
+        editor->setGeometry(option.rect);
     }
 };
 
 class CheckBoxDelegate : public QStyledItemDelegate {
    public:
-    CheckBoxDelegate(QObject* parent = nullptr)
-        : QStyledItemDelegate(parent) {}
+    CheckBoxDelegate(QObject* parent = nullptr) : QStyledItemDelegate(parent) {}
 
-    QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& option,
+    QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& /*option*/,
                           const QModelIndex& index) const override {
-        QCheckBox* editor = new QCheckBox(parent);
+        auto* editor = new QCheckBox(parent);
 
         editor->setChecked(index.data().toBool());
         return editor;
     }
 
     void setEditorData(QWidget* editor, const QModelIndex& index) const override {
-        QCheckBox* checkBox = static_cast<QCheckBox*>(editor);
+        auto* checkBox = static_cast<QCheckBox*>(editor);
         checkBox->setChecked(index.data().toBool());
     }
 
     void setModelData(QWidget* editor, QAbstractItemModel* model,
                       const QModelIndex& index) const override {
-        QCheckBox* checkBox = static_cast<QCheckBox*>(editor);
+        auto* checkBox = static_cast<QCheckBox*>(editor);
         model->setData(index, checkBox->isChecked());
+    }
+
+    void updateEditorGeometry(QWidget* editor, const QStyleOptionViewItem& option,
+                              const QModelIndex& /*index*/) const override {
+        editor->setGeometry(option.rect);
     }
 };
 
 class DoubleSpinBoxDelegate : public QStyledItemDelegate {
    public:
-    DoubleSpinBoxDelegate(QObject* parent = nullptr, int decimals = 2, int min = 0, int max = 100)
-        : QStyledItemDelegate(parent), decimals(decimals), min(min), max(max) {}
+    DoubleSpinBoxDelegate(QObject* parent = nullptr, int decimals = 2, double min = 0,
+                          double max = 100)
+        : QStyledItemDelegate(parent), decimals(decimals), max(max), min(min) {}
 
-    QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& option,
+    QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& /*option*/,
                           const QModelIndex& index) const override {
-        QDoubleSpinBox* editor = new QDoubleSpinBox(parent);
+        auto* editor = new QDoubleSpinBox(parent);
 
         editor->setValue(index.data().toDouble());
         editor->setDecimals(decimals);
@@ -346,18 +399,24 @@ class DoubleSpinBoxDelegate : public QStyledItemDelegate {
     }
 
     void setEditorData(QWidget* editor, const QModelIndex& index) const override {
-        QDoubleSpinBox* spinBox = static_cast<QDoubleSpinBox*>(editor);
+        auto* spinBox = static_cast<QDoubleSpinBox*>(editor);
         spinBox->setValue(index.data().toDouble());
     }
 
     void setModelData(QWidget* editor, QAbstractItemModel* model,
                       const QModelIndex& index) const override {
-        QDoubleSpinBox* spinBox = static_cast<QDoubleSpinBox*>(editor);
+        auto* spinBox = static_cast<QDoubleSpinBox*>(editor);
         model->setData(index, spinBox->value());
     }
 
+    void updateEditorGeometry(QWidget* editor, const QStyleOptionViewItem& option,
+                              const QModelIndex& /*index*/) const override {
+        editor->setGeometry(option.rect);
+    }
+
    private:
-    int decimals, max, min;
+    int decimals;
+    double max, min;
 };
 
 #endif  // DELEGATES_H

@@ -1,7 +1,6 @@
-#include "Splitter.h"
+#include "Splitter.hpp"
 
-Splitter::Splitter(QWidget* parent)
-    : QSplitter(parent) {}
+Splitter::Splitter(QWidget* parent) : QSplitter(parent) {}
 
 void Splitter::setWidgetSizes(int first, int second) {
     QList<int> sizes;

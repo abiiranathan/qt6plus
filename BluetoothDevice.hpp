@@ -1,5 +1,3 @@
-// BluetoothDevice.h
-
 #ifndef BLUETOOTHDEVICE_H
 #define BLUETOOTHDEVICE_H
 
@@ -10,6 +8,9 @@
 
 class BluetoothDevice : public QObject {
     Q_OBJECT
+
+    QBluetoothDeviceDiscoveryAgent* m_discoveryAgent;
+    QBluetoothSocket* m_socket;
 
    public:
     explicit BluetoothDevice(QObject* parent = nullptr);
@@ -33,10 +34,6 @@ class BluetoothDevice : public QObject {
     void socketConnected();
     void socketDisconnected();
     void socketReadyRead();
-
-   private:
-    QBluetoothDeviceDiscoveryAgent* m_discoveryAgent;
-    QBluetoothSocket* m_socket;
 };
 
 #endif  // BLUETOOTHDEVICE_H

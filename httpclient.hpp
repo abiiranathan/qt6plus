@@ -8,8 +8,6 @@
 #include <QNetworkRequest>
 #include <QObject>
 #include <QUrl>
-#include <exception>
-#include <string>
 
 struct HttpResponse {
     bool OK;              // OK is true if request was successful.
@@ -63,7 +61,7 @@ class HttpClient : public QObject {
      *
      * @param certPath QString
      */
-    static void setRootCA(QString certPath);
+    static void setRootCA(const QString& certPath);
 
     /**
      * @brief Set the Bearer Token string. This will be used to Bearer Auth.

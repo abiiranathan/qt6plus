@@ -3,7 +3,7 @@
 #include <QFileSystemModel>
 #include <QInputDialog>
 #include <QMenu>
-#include "EnhancedTreeView.h"
+#include "EnhancedTreeView.hpp"
 
 int main(int argc, char* argv[]) {
     QApplication a(argc, argv);
@@ -25,7 +25,8 @@ int main(int argc, char* argv[]) {
     QObject::connect(createDirAction, &QAction::triggered, [&]() {
         QModelIndex currentIndex = treeView.currentIndex();
         QString currentPath = model.filePath(currentIndex);
-        QString dirName = QInputDialog::getText(&treeView, "Create Directory", "Enter directory name:");
+        QString dirName =
+            QInputDialog::getText(&treeView, "Create Directory", "Enter directory name:");
         if (!dirName.isEmpty()) {
             QString newDirPath = currentPath + QDir::separator() + dirName;
             model.mkdir(currentIndex, dirName);

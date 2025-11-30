@@ -1,9 +1,8 @@
-#include "TableWidget.h"
+#include "TableWidget.hpp"
 #include <iostream>
 
 // =============== HtmlPreviewWidget oveerides paintEvent =========
-HtmlPreviewWidget::HtmlPreviewWidget(QString html)
-    : htmlContent(html) {
+HtmlPreviewWidget::HtmlPreviewWidget(QString html) : htmlContent(html) {
     updatePreview();
 }
 
@@ -26,20 +25,18 @@ void HtmlPreviewWidget::paintEvent(QPaintEvent* event) {
 }
 
 // =================== CustomTableModel overrides flags ===========================
-CustomTableModel::CustomTableModel(const QList<int>& editableColumns, const QList<int>& disabledColumns,
-                                   QObject* parent)
+CustomTableModel::CustomTableModel(const QList<int>& editableColumns,
+                                   const QList<int>& disabledColumns, QObject* parent)
     : QStandardItemModel(parent),
       editableColumns(editableColumns),
-      disabledColumns(disabledColumns) {
-}
+      disabledColumns(disabledColumns) {}
 
 Qt::ItemFlags CustomTableModel::flags(const QModelIndex& index) const {
     if (!index.isValid())
         return Qt::NoItemFlags;
 
     if (editableColumns.contains(index.column()))
-        return Qt::ItemFlags(Qt::ItemIsSelectable | Qt::ItemIsEditable |
-                             Qt::ItemIsEnabled);
+        return Qt::ItemFlags(Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled);
 
     if (disabledColumns.contains(index.column()))
         return Qt::ItemFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
@@ -71,8 +68,7 @@ QList<int> CustomTableModel::getDisabledColumns() const {
 /**
      * Constructor for the TableWidget.
      */
-TableWidget::TableWidget(QWidget* parent, QList<int> editableColumns,
-                         QList<int> disabledColumns)
+TableWidget::TableWidget(QWidget* parent, QList<int> editableColumns, QList<int> disabledColumns)
     : QTableView(parent) {
     tableModel = new CustomTableModel(editableColumns, disabledColumns, this);
 
@@ -218,7 +214,8 @@ void TableWidget::setData(const QVector<QStringList>& data) {
 
 // Sets the signals and slots for double click on table. Calls handler with data for
 // the double-clicked row.
-void TableWidget::setDoubleClickHandler(std::function<void(int row, int col, const QStringList& data)> handler) {
+void TableWidget::setDoubleClickHandler(
+    std::function<void(int row, int col, const QStringList& data)> handler) {
     doubleClickHandler = std::move(handler);
 }
 
@@ -299,7 +296,8 @@ QString TableWidget::generateCsvData() {
 
 // Generates and returns QString containing JSON for the table data.
 // The valueConverter is required if you want to convert cell data to other types from QString.
-QString TableWidget::generateJsonData(QVariant (*valueConverter)(int col, const QString& cellData)) {
+QString TableWidget::generateJsonData(QVariant (*valueConverter)(int col,
+                                                                 const QString& cellData)) {
     QJsonArray rowsArray;
 
     int rowCount = model()->rowCount();
@@ -342,7 +340,10 @@ void TableWidget::showPrintPreview() {
     }
 
     if (!logo.isEmpty()) {
-        html += QString("<div style=\"display: inline-block;\"><img src=\"%1\" width=\"64\" height=\"64\" /></div>").arg(logo.toString());
+        html += QString(
+                    "<div style=\"display: inline-block;\"><img src=\"%1\" width=\"64\" "
+                    "height=\"64\" /></div>")
+                    .arg(logo.toString());
     }
 
     html += "<br/> </div>";
@@ -362,8 +363,7 @@ void TableWidget::showPrintPreview() {
     previewDialog.setWindowTitle("Print Preview");
 
     // Set the custom preview widget as the central widget of the print preview dialog
-    previewDialog.setWindowFlags(previewDialog.windowFlags() &
-                                 ~Qt::WindowContextHelpButtonHint);
+    previewDialog.setWindowFlags(previewDialog.windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
     QVBoxLayout* layout = new QVBoxLayout();
     layout->addWidget(&previewWidget);
@@ -390,7 +390,10 @@ void TableWidget::printTable(QPrinter* printer) {
     }
 
     if (!logo.isEmpty()) {
-        html += QString("<div style=\"display: inline-block;\"><img src=\"%1\" width=\"64\" height=\"64\" /></div>").arg(logo.toString());
+        html += QString(
+                    "<div style=\"display: inline-block;\"><img src=\"%1\" width=\"64\" "
+                    "height=\"64\" /></div>")
+                    .arg(logo.toString());
     }
 
     html += "<br/> </div>";
@@ -593,8 +596,7 @@ void TableWidget::contextMenuEvent(QContextMenuEvent* event) {
 }
 
 void TableWidget::filterTable(const QString& query,
-                              const QRegularExpression::PatternOption caseSensitivity,
-                              int column) {
+                              const QRegularExpression::PatternOption caseSensitivity, int column) {
 
     if (query.isEmpty()) {
         proxyModel->setFilterRegularExpression(QRegularExpression());
@@ -611,7 +613,8 @@ void TableWidget::filterTable(const QString& query,
     proxyModel->setFilterRegularExpression(regex);
 }
 
-void TableWidget::handleSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected) {
+void TableWidget::handleSelectionChanged(const QItemSelection& selected,
+                                         const QItemSelection& deselected) {
     Q_UNUSED(deselected);
     if (selected.isEmpty())
         return;
