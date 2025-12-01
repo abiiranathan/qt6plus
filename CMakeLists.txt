@@ -45,7 +45,8 @@ find_package(Qt6 REQUIRED
   Bluetooth
 )
 
-set(HEADERS  
+set(HEADERS 
+  include/qt6plus_export.hpp
   include/Splitter.hpp
   include/GraphicsScene.hpp
   include/Delegates.hpp
@@ -72,13 +73,16 @@ add_library(qt6plus ${HEADERS} ${SOURCES})
 # Add alias for consistent usage
 add_library(qt6plus::qt6plus ALIAS qt6plus)
 
-# Set library properties
 set_target_properties(qt6plus PROPERTIES
     VERSION ${PROJECT_VERSION}
     SOVERSION ${PROJECT_VERSION_MAJOR}
     PUBLIC_HEADER "${HEADERS}"
     EXPORT_NAME qt6plus
+    CXX_VISIBILITY_PRESET hidden          # Hide symbols by default
+    VISIBILITY_INLINES_HIDDEN ON          # Hide inline symbols
+    WINDOWS_EXPORT_ALL_SYMBOLS OFF        # Don't auto-export on Windows
 )
+
 
 target_link_libraries(qt6plus PUBLIC
     Qt6::Widgets
@@ -91,7 +95,18 @@ target_link_libraries(qt6plus PUBLIC
     Qt6::Bluetooth
 )
 
-target_compile_definitions(qt6plus PRIVATE SPLITTER_LIBRARY)
+
+# Define export macro when building the library
+target_compile_definitions(qt6plus PRIVATE qt6plus_EXPORTS)
+
+# Set library properties
+set_target_properties(qt6plus PROPERTIES
+    VERSION ${PROJECT_VERSION}
+    SOVERSION ${PROJECT_VERSION_MAJOR}
+    PUBLIC_HEADER "${HEADERS}"
+    EXPORT_NAME qt6plus
+)
+
 
 # Include directories
 target_include_directories(qt6plus

@@ -4,8 +4,9 @@
 #include <QModelIndex>
 #include <QStringList>
 #include <QTreeView>
+#include "qt6plus_export.hpp"
 
-class EnhancedTreeView : public QTreeView {
+class QT6PLUS_EXPORT EnhancedTreeView : public QTreeView {
     Q_OBJECT
 
    public:

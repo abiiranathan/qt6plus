@@ -16,7 +16,9 @@
 #include <QQueue>
 #include <QWheelEvent>
 
-class GraphicsScene : public QGraphicsScene {
+#include "qt6plus_export.hpp"
+
+class QT6PLUS_EXPORT GraphicsScene : public QGraphicsScene {
    public:
     GraphicsScene(QObject* parent = nullptr);
 

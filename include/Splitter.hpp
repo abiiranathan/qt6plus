@@ -2,8 +2,9 @@
 #define SPLITTER_H
 
 #include <QSplitter>
+#include "qt6plus_export.hpp"
 
-class Splitter : public QSplitter {
+class QT6PLUS_EXPORT Splitter : public QSplitter {
    public:
     Splitter(QWidget* parent = nullptr);
 

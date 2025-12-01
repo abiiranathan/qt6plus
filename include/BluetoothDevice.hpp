@@ -6,7 +6,9 @@
 #include <QBluetoothSocket>
 #include <QObject>
 
-class BluetoothDevice : public QObject {
+#include "qt6plus_export.hpp"
+
+class QT6PLUS_EXPORT BluetoothDevice : public QObject {
     Q_OBJECT
 
     QBluetoothDeviceDiscoveryAgent* m_discoveryAgent;

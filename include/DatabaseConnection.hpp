@@ -10,12 +10,14 @@
 #include <QtSql/QSqlQuery>
 #include <optional>
 
+#include "qt6plus_export.hpp"
+
 /**
  * Database connection manager that handles database connections using ConnOptions.
  * Provides RAII-based connection lifecycle management with proper cleanup.
  * Safe for use in multi-threaded applications when each thread has its own instance.
  */
-class DatabaseConnection {
+class QT6PLUS_EXPORT DatabaseConnection {
    public:
     /**
      * Constructs a DatabaseConnection with the specified options.
@@ -374,14 +376,13 @@ class DatabaseConnection {
  * } // Auto rollback if commit not called
  * @endcode
  */
-class TransactionGuard {
+class QT6PLUS_EXPORT TransactionGuard {
    public:
     /**
      * Begins a transaction on the provided connection.
      * @param conn Database connection to manage transaction for.
      */
-    explicit TransactionGuard(DatabaseConnection& conn)
-        : m_connection(conn), m_committed(false), m_active(false) {
+    explicit TransactionGuard(DatabaseConnection& conn) : m_connection(conn) {
         m_active = m_connection.beginTransaction();
     }
 

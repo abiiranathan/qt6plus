@@ -9,7 +9,9 @@
 #include <QObject>
 #include <QUrl>
 
-struct HttpResponse {
+#include "qt6plus_export.hpp"
+
+struct QT6PLUS_EXPORT HttpResponse {
     bool OK;              // OK is true if request was successful.
     int statusCode;       // StatusCode
     QByteArray data;      // Contains response body if OK
@@ -30,7 +32,7 @@ struct HttpResponse {
  * Each request uses the same QNetworkAccessManager instance but different QNetwork object.
  * This means you can use the same client to perform multiple subsequent requests.
  */
-class HttpClient : public QObject {
+class QT6PLUS_EXPORT HttpClient : public QObject {
     Q_OBJECT
 
    public:
@@ -170,7 +172,7 @@ class HttpClient : public QObject {
     void onReplyFinished();
 };
 
-void writeFile(const QString& path, const QByteArray& data);
-QImage imageFromBytes(const QByteArray& data);
+QT6PLUS_EXPORT void writeFile(const QString& path, const QByteArray& data);
+QT6PLUS_EXPORT QImage imageFromBytes(const QByteArray& data);
 
 #endif /* __HTTPCLIENT_H__ */

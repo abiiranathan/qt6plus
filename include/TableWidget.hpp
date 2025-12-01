@@ -14,7 +14,9 @@
 #include <QtWidgets>
 #include <optional>
 
-class HtmlPreviewWidget : public QPrintPreviewWidget {
+#include "qt6plus_export.hpp"
+
+class QT6PLUS_EXPORT HtmlPreviewWidget : public QPrintPreviewWidget {
    public:
     HtmlPreviewWidget(QString html);
 
@@ -25,7 +27,7 @@ class HtmlPreviewWidget : public QPrintPreviewWidget {
     QString htmlContent;
 };
 
-class CustomTableModel : public QStandardItemModel {
+class QT6PLUS_EXPORT CustomTableModel : public QStandardItemModel {
     Q_OBJECT
 
    public:
@@ -44,7 +46,7 @@ class CustomTableModel : public QStandardItemModel {
     QList<int> disabledColumns;
 };
 
-class TableWidget : public QTableView {
+class QT6PLUS_EXPORT TableWidget : public QTableView {
     Q_OBJECT
 
    public:
@@ -59,13 +61,13 @@ class TableWidget : public QTableView {
                          const QList<int>& disabledColumns = QList<int>{});
 
     // Destructor
-    ~TableWidget();
+    ~TableWidget() override;
 
     // Returns the number of rows
-    int rowCount() const;
+    [[nodiscard]] int rowCount() const;
 
     // Returns the number of columns
-    int columnCount() const;
+    [[nodiscard]] int columnCount() const;
 
     // Resize headers to fit content
     void fit();
@@ -130,10 +132,10 @@ class TableWidget : public QTableView {
 
     void appendRows(const QVector<QStringList>& rowsData);
 
-    auto getAllTableData() const;
+    [[nodiscard]] auto getAllTableData() const;
 
-    QList<QList<QString>> getSelectedRows() const;
-    std::optional<QStringList> getCurrentRow() const;
+    [[nodiscard]] QList<QList<QString>> getSelectedRows() const;
+    [[nodiscard]] std::optional<QStringList> getCurrentRow() const;
 
     void selectRowRange(int startRow, int endRow);
 

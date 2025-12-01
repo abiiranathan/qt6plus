@@ -16,7 +16,9 @@
 #include <QTextEdit>
 #include <utility>
 
-class DateTimeDelegate : public QStyledItemDelegate {
+#include "qt6plus_export.hpp"
+
+class QT6PLUS_EXPORT DateTimeDelegate : public QStyledItemDelegate {
    public:
     DateTimeDelegate(QObject* parent = nullptr) : QStyledItemDelegate(parent) {}
 
@@ -69,7 +71,7 @@ class DateTimeDelegate : public QStyledItemDelegate {
     }
 };
 
-class DateDelegate : public QStyledItemDelegate {
+class QT6PLUS_EXPORT DateDelegate : public QStyledItemDelegate {
    public:
     DateDelegate(QObject* parent = nullptr, QDate defaultDate = QDate::currentDate(),
                  QDate minDate = QDate(), QDate maxDate = QDate())
@@ -122,7 +124,7 @@ class DateDelegate : public QStyledItemDelegate {
     QDate minDate, maxDate, defaultDate;
 };
 
-class TimeDelegate : public QStyledItemDelegate {
+class QT6PLUS_EXPORT TimeDelegate : public QStyledItemDelegate {
    public:
     TimeDelegate(QObject* parent = nullptr) : QStyledItemDelegate(parent) {}
 
@@ -167,7 +169,7 @@ class TimeDelegate : public QStyledItemDelegate {
     }
 };
 
-class SpinBoxDelegate : public QStyledItemDelegate {
+class QT6PLUS_EXPORT SpinBoxDelegate : public QStyledItemDelegate {
    public:
     SpinBoxDelegate(QObject* parent = nullptr, int min = 0, int max = 100)
         : QStyledItemDelegate(parent), min(min), max(max) {}
@@ -202,7 +204,7 @@ class SpinBoxDelegate : public QStyledItemDelegate {
     int min, max;
 };
 
-class TextEditDelegate : public QStyledItemDelegate {
+class QT6PLUS_EXPORT TextEditDelegate : public QStyledItemDelegate {
    public:
     TextEditDelegate(QObject* parent = nullptr) : QStyledItemDelegate(parent) {}
 
@@ -231,7 +233,7 @@ class TextEditDelegate : public QStyledItemDelegate {
     }
 };
 
-class TextBrowserDelegate : public QStyledItemDelegate {
+class QT6PLUS_EXPORT TextBrowserDelegate : public QStyledItemDelegate {
    public:
     TextBrowserDelegate(QObject* parent = nullptr) : QStyledItemDelegate(parent) {}
 
@@ -260,7 +262,7 @@ class TextBrowserDelegate : public QStyledItemDelegate {
     }
 };
 
-class LineEditDelegate : public QStyledItemDelegate {
+class QT6PLUS_EXPORT LineEditDelegate : public QStyledItemDelegate {
    public:
     LineEditDelegate(QObject* parent = nullptr) : QStyledItemDelegate(parent) {}
 
@@ -289,7 +291,7 @@ class LineEditDelegate : public QStyledItemDelegate {
     }
 };
 
-class ComboBoxDelegate : public QStyledItemDelegate {
+class QT6PLUS_EXPORT ComboBoxDelegate : public QStyledItemDelegate {
    public:
     ComboBoxDelegate(QObject* parent = nullptr, QStringList items = QStringList())
         : QStyledItemDelegate(parent), items(std::move(items)) {}
@@ -323,7 +325,7 @@ class ComboBoxDelegate : public QStyledItemDelegate {
     QStringList items;
 };
 
-class RadioButtonDelegate : public QStyledItemDelegate {
+class QT6PLUS_EXPORT RadioButtonDelegate : public QStyledItemDelegate {
    public:
     RadioButtonDelegate(QObject* parent = nullptr) : QStyledItemDelegate(parent) {}
 
@@ -352,7 +354,7 @@ class RadioButtonDelegate : public QStyledItemDelegate {
     }
 };
 
-class CheckBoxDelegate : public QStyledItemDelegate {
+class QT6PLUS_EXPORT CheckBoxDelegate : public QStyledItemDelegate {
    public:
     CheckBoxDelegate(QObject* parent = nullptr) : QStyledItemDelegate(parent) {}
 
@@ -381,7 +383,7 @@ class CheckBoxDelegate : public QStyledItemDelegate {
     }
 };
 
-class DoubleSpinBoxDelegate : public QStyledItemDelegate {
+class QT6PLUS_EXPORT DoubleSpinBoxDelegate : public QStyledItemDelegate {
    public:
     DoubleSpinBoxDelegate(QObject* parent = nullptr, int decimals = 2, double min = 0,
                           double max = 100)

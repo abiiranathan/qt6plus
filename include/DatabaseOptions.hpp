@@ -6,15 +6,17 @@
 #include <type_traits>
 #include <variant>
 
+#include "qt6plus_export.hpp"
+
 /** Enumeration of supported database drivers. */
-enum class Driver : uint8_t {
+enum class QT6PLUS_EXPORT Driver : uint8_t {
     SQLITE,    // SQLite database
     POSTGRES,  // PostgreSQL database
     MYSQL      // MySQL/MariaDB database
 };
 
 /** SQLite database connection options. */
-struct SqliteOptions {
+struct QT6PLUS_EXPORT SqliteOptions {
     /** Database file name or path. */
     QString dbName = "db.sqlite3";
 
@@ -50,7 +52,7 @@ struct MysqlTag {};
  * @tparam DatabaseTag Type tag (PostgresTag or MysqlTag) to distinguish database types.
  */
 template <typename DatabaseTag>
-class DatabaseOptions {
+class QT6PLUS_EXPORT DatabaseOptions {
    public:
     /** Builder class for fluent construction of DatabaseOptions. */
     class Builder {
@@ -197,24 +199,25 @@ class DatabaseOptions {
 };
 
 /** Type alias for PostgreSQL connection options. */
-using PostgresOptions = DatabaseOptions<PostgresTag>;
+using QT6PLUS_EXPORT PostgresOptions = DatabaseOptions<PostgresTag>;
 
 /** Type alias for MySQL connection options. */
-using MysqlOptions = DatabaseOptions<MysqlTag>;
+using QT6PLUS_EXPORT MysqlOptions = DatabaseOptions<MysqlTag>;
 
 /**
  * Concept constraining template parameter to valid database option types.
  * @tparam T Type to validate.
  */
 template <typename T>
-concept DatabaseOptionType = std::is_same_v<T, SqliteOptions> ||
-                             std::is_same_v<T, PostgresOptions> || std::is_same_v<T, MysqlOptions>;
+concept QT6PLUS_EXPORT DatabaseOptionType =
+    std::is_same_v<T, SqliteOptions> || std::is_same_v<T, PostgresOptions> ||
+    std::is_same_v<T, MysqlOptions>;
 
 /**
  * Unified connection options class supporting multiple database types.
  * Uses std::variant to hold one of the supported database option types.
  */
-class ConnOptions {
+class QT6PLUS_EXPORT ConnOptions {
    public:
     /** Variant type holding any of the supported database options. */
     using Variant = std::variant<SqliteOptions, PostgresOptions, MysqlOptions>;
