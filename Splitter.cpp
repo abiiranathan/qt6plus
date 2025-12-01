@@ -47,7 +47,7 @@ void Splitter::insertWidget(int index, QWidget* widget, int stretch) {
 }
 
 void Splitter::setStretchFactors(const QVector<int>& stretchFactors) {
-    int ncount = qMin(stretchFactors.size(), count());
+    int ncount = qMin((int)stretchFactors.size(), count());
     for (int i = 0; i < ncount; ++i) {
         setStretchFactor(i, stretchFactors[i]);
     }

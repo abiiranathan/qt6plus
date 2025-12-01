@@ -89,10 +89,12 @@ void HttpClient::onReplyFinished() {
 
     const bool ok = !requestFailed && statusCode >= 200 && statusCode < 300;
 
-    HttpResponse response{.OK = ok,
-                          .statusCode = statusCode,
-                          .data = ok ? responseData : QByteArray(),
-                          .errorString = ok ? QString() : responseData};
+    HttpResponse response{
+        .OK = ok,
+        .statusCode = statusCode,
+        .data = ok ? responseData : QByteArray(),
+        .errorString = ok ? QString() : responseData,
+    };
 
     // We have a non-HTTP error
     if (statusCode == 0) {
@@ -172,10 +174,12 @@ HttpResponse HttpClient::waitForResponse(QNetworkReply* reply) {
 
     const bool ok = !requestFailed && statusCode >= 200 && statusCode < 300;
 
-    HttpResponse response{.OK = ok,
-                          .statusCode = statusCode,
-                          .data = ok ? responseData : QByteArray(),
-                          .errorString = ok ? QString() : responseData};
+    HttpResponse response{
+        .OK = ok,
+        .statusCode = statusCode,
+        .data = ok ? responseData : QByteArray(),
+        .errorString = ok ? QString() : responseData,
+    };
 
     // We have a non-HTTP error
     if (statusCode == 0) {
