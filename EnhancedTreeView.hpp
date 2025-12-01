@@ -23,7 +23,7 @@ class EnhancedTreeView : public QTreeView {
     QModelIndex addItem(const QStringList& itemData, const QModelIndex& parent = QModelIndex());
 
     void setHeaders(const QStringList& headers);
-    QModelIndexList getCurrentSelection() const;
+    [[nodiscard]] QModelIndexList getCurrentSelection() const;
     void setItemIcon(const QModelIndex& index, const QIcon& icon);
 
    protected:
