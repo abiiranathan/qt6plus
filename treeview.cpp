@@ -18,8 +18,8 @@ int main(int argc, char* argv[]) {
     treeView.setHeaders(QStringList() << "Files");
 
     // Create the context menu actions
-    QAction* createDirAction = new QAction("Create Directory", &treeView);
-    QAction* deleteAction = new QAction("Delete", &treeView);
+    auto* createDirAction = new QAction("Create Directory", &treeView);
+    auto* deleteAction = new QAction("Delete", &treeView);
 
     // Connect the actions to their respective slots
     QObject::connect(createDirAction, &QAction::triggered, [&]() {

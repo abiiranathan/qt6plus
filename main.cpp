@@ -24,7 +24,7 @@ int main(int argc, char* argv[]) {
     splitter.setOrientation(Qt::Vertical);
 
     // Create a table widget
-    TableWidget* table = new TableWidget(nullptr, QList<int>(), QList<int>{0, 1});
+    auto* table = new TableWidget(nullptr, QList<int>(), QList<int>{0, 1});
     table->title = "RISTAL UNIVERSITY";
     table->logo = QUrl::fromLocalFile("/home/nabiizy/Downloads/logo-white.png");
 
@@ -37,7 +37,8 @@ int main(int argc, char* argv[]) {
     table->setItemDelegateForColumn(4, new DateTimeDelegate());
     table->setItemDelegateForColumn(5, new TimeDelegate());
 
-    table->setDoubleClickHandler([](int row, int col, auto data) { qDebug() << data << "\n"; });
+    table->setDoubleClickHandler(
+        [](int /*row*/, int /*col*/, const auto& data) { qDebug() << data << "\n"; });
 
     // Get the vertical header
     QHeaderView* verticalHeader = table->verticalHeader();
@@ -103,10 +104,9 @@ int main(int argc, char* argv[]) {
     std::string password = "strong_password";
     std::string hashedPassword = bcrypt::generateHash(password);
 
-    std::cout << "Password Valid: " << bcrypt::validatePassword(password, hashedPassword)
-              << std::endl;
+    std::cout << "Password Valid: " << bcrypt::validatePassword(password, hashedPassword) << '\n';
     std::cout << "Password Valid: " << bcrypt::validatePassword("Other password", hashedPassword)
-              << std::endl;
+              << '\n';
     mainWindow.show();
     return app.exec();
 }

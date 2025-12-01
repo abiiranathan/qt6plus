@@ -3,11 +3,11 @@
 
 #include "DatabaseOptions.hpp"
 
-#include <QSqlDatabase>
-#include <QSqlError>
-#include <QSqlQuery>
 #include <QString>
 #include <QUuid>
+#include <QtSql/QSqlDatabase>
+#include <QtSql/QSqlError>
+#include <QtSql/QSqlQuery>
 #include <optional>
 
 /**

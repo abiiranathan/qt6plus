@@ -13,10 +13,6 @@
 #include <QTableWidgetItem>
 #include <QtWidgets>
 #include <optional>
-#include <tuple>
-
-// Remove the '-mno-direct-extern-access' flag
-// #ifndef TABLE_WIDGET_H
 
 class HtmlPreviewWidget : public QPrintPreviewWidget {
    public:
@@ -36,10 +32,10 @@ class CustomTableModel : public QStandardItemModel {
     explicit CustomTableModel(const QList<int>& editableColumns, const QList<int>& disabledColumns,
                               QObject* parent = nullptr);
 
-    Qt::ItemFlags flags(const QModelIndex& index) const override;
+    [[nodiscard]] Qt::ItemFlags flags(const QModelIndex& index) const override;
 
-    QList<int> getEditableColumns() const;
-    QList<int> getDisabledColumns() const;
+    [[nodiscard]] QList<int> getEditableColumns() const;
+    [[nodiscard]] QList<int> getDisabledColumns() const;
 
     bool setData(const QModelIndex& index, const QVariant& value, int role) override;
 
@@ -58,8 +54,9 @@ class TableWidget : public QTableView {
     /**
      * Constructor for the TableWidget.
      */
-    explicit TableWidget(QWidget* parent = nullptr, QList<int> editableColumns = QList<int>{},
-                         QList<int> disabledColumns = QList<int>{});
+    explicit TableWidget(QWidget* parent = nullptr,
+                         const QList<int>& editableColumns = QList<int>{},
+                         const QList<int>& disabledColumns = QList<int>{});
 
     // Destructor
     ~TableWidget();
@@ -108,7 +105,8 @@ class TableWidget : public QTableView {
 
     // Sets the signals and slots for double click on table. Calls handler with data for
     // the double-clicked row.
-    void setDoubleClickHandler(std::function<void(int row, int col, const QStringList& data)> handler);
+    void setDoubleClickHandler(
+        std::function<void(int row, int col, const QStringList& data)> handler);
 
     // Generates an html table and writes it to a QString that is returned.
     QString generateHtmlTable();
@@ -118,7 +116,8 @@ class TableWidget : public QTableView {
 
     // Generates and returns QString containing JSON for the table data.
     // The valueConverter is required if you want to convert cell data to other types from QString.
-    QString generateJsonData(QVariant (*valueConverter)(int col, const QString& cellData) = nullptr);
+    QString generateJsonData(QVariant (*valueConverter)(int col,
+                                                        const QString& cellData) = nullptr);
 
     void showPrintPreview();
 
@@ -150,14 +149,9 @@ class TableWidget : public QTableView {
 
    public slots:
     void filterTable(const QString& query,
-                     const QRegularExpression::PatternOption caseSensitivity = QRegularExpression::CaseInsensitiveOption,
+                     QRegularExpression::PatternOption caseSensitivity =
+                         QRegularExpression::CaseInsensitiveOption,
                      int column = -1);
-
-   private slots:
-    void handleSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
-
-    void handleDataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight,
-                           const QVector<int>& roles = QVector<int>());
 
    private:
     std::function<void(int, int, const QStringList&)> doubleClickHandler;
@@ -182,7 +176,7 @@ class TableWidget : public QTableView {
     QStringList verticalHeaders;
 
     // use fieldNames in generating csv and json
-    bool useFields() const;
+    [[nodiscard]] bool useFields() const;
 
     // Set background to a cell
     void setCellBackground(int row, int column, const QColor& color);
@@ -192,6 +186,12 @@ class TableWidget : public QTableView {
 
     // Set column background
     void setColumnBackground(int column, const QColor& color);
+
+   private slots:  // NOLINT
+    void handleSelectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
+
+    void handleDataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight,
+                           const QVector<int>& roles = QVector<int>());
 };
 
 #endif  // TABLE_WIDGET_H

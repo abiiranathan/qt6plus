@@ -40,7 +40,7 @@ void EnhancedTreeView::toggleExpandCollapseSelectedItems() {
 
 void EnhancedTreeView::deleteSelectedItems() {
     QModelIndexList selected = selectedIndexes();
-    QStandardItemModel* model = qobject_cast<QStandardItemModel*>(this->model());
+    auto* model = qobject_cast<QStandardItemModel*>(this->model());
 
     for (const QModelIndex& index : selected) {
         if (model) {
@@ -50,7 +50,7 @@ void EnhancedTreeView::deleteSelectedItems() {
 }
 
 QModelIndex EnhancedTreeView::addItem(const QStringList& itemData, const QModelIndex& parent) {
-    QStandardItemModel* model = qobject_cast<QStandardItemModel*>(this->model());
+    auto* model = qobject_cast<QStandardItemModel*>(this->model());
 
     if (model) {
         QList<QStandardItem*> items;
@@ -66,11 +66,11 @@ QModelIndex EnhancedTreeView::addItem(const QStringList& itemData, const QModelI
         return newIndex;
     }
 
-    return QModelIndex();
+    return {};
 }
 
 void EnhancedTreeView::setHeaders(const QStringList& headers) {
-    QStandardItemModel* model = qobject_cast<QStandardItemModel*>(this->model());
+    auto* model = qobject_cast<QStandardItemModel*>(this->model());
 
     if (model) {
         model->setHorizontalHeaderLabels(headers);
@@ -82,7 +82,7 @@ QModelIndexList EnhancedTreeView::getCurrentSelection() const {
 }
 
 void EnhancedTreeView::setItemIcon(const QModelIndex& index, const QIcon& icon) {
-    QStandardItemModel* model = qobject_cast<QStandardItemModel*>(this->model());
+    auto* model = qobject_cast<QStandardItemModel*>(this->model());
 
     if (model) {
         QStandardItem* item = model->itemFromIndex(index);
@@ -92,7 +92,7 @@ void EnhancedTreeView::setItemIcon(const QModelIndex& index, const QIcon& icon) 
     }
 }
 
-void EnhancedTreeView::expandCollapseItems(const QModelIndex& index, bool expandNode) {
+void EnhancedTreeView::expandCollapseItems(const QModelIndex& index, bool expandNode) {  // NOLINT
     if (!index.isValid()) {
         return;
     }
@@ -120,7 +120,7 @@ void EnhancedTreeView::keyPressEvent(QKeyEvent* event) {
 }
 
 void EnhancedTreeView::clear() {
-    QStandardItemModel* model = qobject_cast<QStandardItemModel*>(this->model());
+    auto* model = qobject_cast<QStandardItemModel*>(this->model());
 
     if (model) {
         model->clear();

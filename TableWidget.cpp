@@ -1,8 +1,9 @@
 #include "TableWidget.hpp"
-#include <iostream>
+
+#include <utility>
 
 // =============== HtmlPreviewWidget oveerides paintEvent =========
-HtmlPreviewWidget::HtmlPreviewWidget(QString html) : htmlContent(html) {
+HtmlPreviewWidget::HtmlPreviewWidget(QString html) : htmlContent(std::move(html)) {
     updatePreview();
 }
 
@@ -32,14 +33,17 @@ CustomTableModel::CustomTableModel(const QList<int>& editableColumns,
       disabledColumns(disabledColumns) {}
 
 Qt::ItemFlags CustomTableModel::flags(const QModelIndex& index) const {
-    if (!index.isValid())
+    if (!index.isValid()) {
         return Qt::NoItemFlags;
+    }
 
-    if (editableColumns.contains(index.column()))
+    if (editableColumns.contains(index.column())) {
         return Qt::ItemFlags(Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled);
+    }
 
-    if (disabledColumns.contains(index.column()))
+    if (disabledColumns.contains(index.column())) {
         return Qt::ItemFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+    }
 
     return QStandardItemModel::flags(index);
 }
@@ -68,7 +72,8 @@ QList<int> CustomTableModel::getDisabledColumns() const {
 /**
      * Constructor for the TableWidget.
      */
-TableWidget::TableWidget(QWidget* parent, QList<int> editableColumns, QList<int> disabledColumns)
+TableWidget::TableWidget(QWidget* parent, const QList<int>& editableColumns,
+                         const QList<int>& disabledColumns)
     : QTableView(parent) {
     tableModel = new CustomTableModel(editableColumns, disabledColumns, this);
 
@@ -161,14 +166,16 @@ void TableWidget::setFieldNames(const QStringList& fieldNames_) {
 }
 
 // Sets vertical headers for the table.
-void TableWidget::setVerticalHeaders(const QStringList& headers) {
-    verticalHeaders = headers;
-    if (!verticalHeaders.isEmpty())
+void TableWidget::setVerticalHeaders(const QStringList& tableHeaders) {
+    verticalHeaders = tableHeaders;
+    if (!verticalHeaders.isEmpty()) {
         tableModel->setVerticalHeaderLabels(verticalHeaders);
+    }
 
     // Adjust header sizes to fit the contents
-    if (!verticalHeaders.isEmpty())
+    if (!verticalHeaders.isEmpty()) {
         verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    }
 }
 
 void TableWidget::resetHeaders() {
@@ -187,12 +194,13 @@ void TableWidget::resetHeaders() {
      */
 void TableWidget::setData(const QVector<QStringList>& data) {
     tableModel->clear();
-    tableModel->setRowCount(data.size());
+    tableModel->setRowCount((int)data.size());
     tableModel->setColumnCount(0);
 
     // Update the column count
-    if (!data.isEmpty())
-        tableModel->setColumnCount(data[0].size());
+    if (!data.isEmpty()) {
+        tableModel->setColumnCount((int)data[0].size());
+    }
 
     // Update the headers because the table was cleared
     resetHeaders();
@@ -205,7 +213,7 @@ void TableWidget::setData(const QVector<QStringList>& data) {
             if (text == "null" || text == "undefined") {
                 text = "";
             }
-            auto item = new QStandardItem(text);
+            auto* item = new QStandardItem(text);
             tableModel->setItem(row, column, item);
         }
     }
@@ -365,12 +373,12 @@ void TableWidget::showPrintPreview() {
     // Set the custom preview widget as the central widget of the print preview dialog
     previewDialog.setWindowFlags(previewDialog.windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
-    QVBoxLayout* layout = new QVBoxLayout();
+    auto* layout = new QVBoxLayout();
     layout->addWidget(&previewWidget);
 
     // Connect the paintRequested signal to handle the printing
     connect(&previewDialog, &QPrintPreviewDialog::paintRequested, this,
-            [this, &document](QPrinter* printer) { document.print(printer); });
+            [&document](QPrinter* printer) { document.print(printer); });
 
     // Show the print preview dialog
     previewDialog.exec();
@@ -433,7 +441,7 @@ void TableWidget::clearTable() {
 
 void TableWidget::appendRows(const QVector<QStringList>& rowsData) {
     int currentRowCount = tableModel->rowCount();
-    int rowsToAdd = rowsData.size();
+    int rowsToAdd = (int)rowsData.size();
     int newRowCount = currentRowCount + rowsToAdd;
 
     tableModel->setRowCount(newRowCount);
@@ -519,10 +527,14 @@ void TableWidget::keyPressEvent(QKeyEvent* event) {
         // Show print preview
         showPrintPreview();
         return;
-    } else if (event->modifiers() == Qt::ControlModifier && event->key() == Qt::Key_P) {
+    }
+
+    if (event->modifiers() == Qt::ControlModifier && event->key() == Qt::Key_P) {
         printTable();
         return;
-    } else if (event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return) {
+    }
+
+    if (event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return) {
         auto selected = getCurrentRow();
         if (doubleClickHandler && selected) {
             QModelIndex index = currentIndex();
@@ -541,9 +553,10 @@ void TableWidget::mouseDoubleClickEvent(QMouseEvent* event) {
 
             QStringList rowData;
             for (int c = 0; c < tableModel->columnCount(); ++c) {
-                auto cellItem = tableModel->item(row, c);
-                if (cellItem)
+                auto* cellItem = tableModel->item(row, c);
+                if (cellItem) {
                     rowData.append(cellItem->text());
+                }
             }
             doubleClickHandler(row, column, rowData);
         }
@@ -553,8 +566,9 @@ void TableWidget::mouseDoubleClickEvent(QMouseEvent* event) {
 }
 
 void TableWidget::contextMenuEvent(QContextMenuEvent* event) {
-    if (!contextMenuEnabled)
+    if (!contextMenuEnabled) {
         return;
+    }
 
     QMenu contextMenu(this);
 
@@ -578,8 +592,9 @@ void TableWidget::contextMenuEvent(QContextMenuEvent* event) {
         }
     } else if (selectedItem == pasteAction) {
         QString clipboardText = QApplication::clipboard()->text();
-        if (clipboardText.isEmpty())
+        if (clipboardText.isEmpty()) {
             return;
+        }
 
         QStringList items = clipboardText.split("\t");
         if (items.size() == model()->columnCount()) {
@@ -616,17 +631,19 @@ void TableWidget::filterTable(const QString& query,
 void TableWidget::handleSelectionChanged(const QItemSelection& selected,
                                          const QItemSelection& deselected) {
     Q_UNUSED(deselected);
-    if (selected.isEmpty())
+    if (selected.isEmpty()) {
         return;
+    }
 
     int selectedRow = selected.indexes().first().row();
     int selectedCol = selected.indexes().first().column();
 
     QStringList rowData;
     for (int column = 0; column < tableModel->columnCount(); ++column) {
-        auto item = tableModel->item(selectedRow, column);
-        if (item)
+        auto* item = tableModel->item(selectedRow, column);
+        if (item) {
             rowData.append(item->text());
+        }
     }
     emit tableSelectionChanged(selectedRow, selectedCol, rowData);
 }
@@ -636,8 +653,9 @@ void TableWidget::handleDataChanged(const QModelIndex& topLeft, const QModelInde
     Q_UNUSED(roles);
 
     // If no row selected, we are just setting the data
-    if (selectionModel()->selectedIndexes().isEmpty())
+    if (selectionModel()->selectedIndexes().isEmpty()) {
         return;
+    }
 
     if (topLeft.row() != bottomRight.row()) {
         // Only handle single-row changes
@@ -653,13 +671,14 @@ void TableWidget::handleDataChanged(const QModelIndex& topLeft, const QModelInde
         QString cellData = data.toString();
         rowData.append(cellData);
     }
+
     emit rowUpdated(row, topLeft.column(), rowData);
-    return QTableView::dataChanged(topLeft, bottomRight, roles);
+    QTableView::dataChanged(topLeft, bottomRight, roles);
 }
 
 void TableWidget::setRowData(int row, const QStringList& rowData) {
     for (int column = 0; column < tableModel->columnCount(); ++column) {
-        QStandardItem* item = new QStandardItem();
+        auto* item = new QStandardItem();
         QString text = rowData.value(column);
 
         // I hate nulls in a table
