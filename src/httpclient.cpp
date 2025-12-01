@@ -1,4 +1,4 @@
-#include "httpclient.hpp"
+#include "../include/httpclient.hpp"
 
 HttpClient::HttpClient(QObject* parent)
     : QObject(parent), manager(new QNetworkAccessManager(this)) {};

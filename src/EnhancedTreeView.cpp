@@ -1,4 +1,4 @@
-#include "EnhancedTreeView.hpp"
+#include "../include/EnhancedTreeView.hpp"
 #include <QKeyEvent>
 #include <QStandardItem>
 #include <QStandardItemModel>

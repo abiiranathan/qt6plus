@@ -3,7 +3,8 @@
 #include <QFileSystemModel>
 #include <QInputDialog>
 #include <QMenu>
-#include "EnhancedTreeView.hpp"
+
+#include "../include/EnhancedTreeView.hpp"
 
 int main(int argc, char* argv[]) {
     QApplication a(argc, argv);

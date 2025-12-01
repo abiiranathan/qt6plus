@@ -1,4 +1,4 @@
-#include "TableWidget.hpp"
+#include "../include/TableWidget.hpp"
 
 #include <utility>
 

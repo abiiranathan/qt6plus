@@ -1,5 +1,5 @@
-#include "GraphicsScene.hpp"
-#include "qmath.h"
+#include "../include/GraphicsScene.hpp"
+#include <qmath.h>
 
 GraphicsScene::GraphicsScene(QObject* parent) : QGraphicsScene(parent) {
     currentPen = QPen(Qt::black);

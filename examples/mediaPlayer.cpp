@@ -12,7 +12,7 @@
 #include <QWidget>
 #include <QtMultimedia/QAudioOutput>
 #include <QtMultimedia/QMediaPlayer>
-#include "EnhancedTreeView.hpp"
+#include "../include/EnhancedTreeView.hpp"
 
 // Create the custom data structure for the music player
 struct Music {

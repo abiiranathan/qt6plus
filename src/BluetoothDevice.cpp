@@ -1,4 +1,4 @@
-#include "BluetoothDevice.hpp"
+#include "../include/BluetoothDevice.hpp"
 #include <QEventLoop>
 #include <QTimer>
 

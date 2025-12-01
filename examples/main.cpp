@@ -7,10 +7,11 @@
 #include <QWidget>
 #include <iostream>
 #include <string>
-#include "Delegates.hpp"
-#include "GraphicsScene.hpp"
-#include "Splitter.hpp"
-#include "TableWidget.hpp"
+
+#include "../include/Delegates.hpp"
+#include "../include/GraphicsScene.hpp"
+#include "../include/Splitter.hpp"
+#include "../include/TableWidget.hpp"
 
 int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
